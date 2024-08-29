@@ -1,5 +1,7 @@
 # messenger
 
+###### ASGI: uvicorn messenger.asgi:application --port 8080
+
 Группы
 <img width="1388" alt="image" src="https://github.com/user-attachments/assets/0d9942de-d8f7-4600-977c-47cc304da6f6">
 
