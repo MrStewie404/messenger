@@ -1,0 +1,36 @@
+{% extends 'flatpages/default.html' %} 
+
+{% load static %}
+
+{% block content %}
+<body class="body-style">
+  <div class="box messages">
+    <div>
+        <div class="message">
+            <h3 style="font-weight:bold;">Username</h3>
+            <h3>Lorem ipsum dolor sit amet.</h3>
+        </div>
+        <div class="message">
+            <h3 style="font-weight:bold;">Username</h3>
+            <h3>Lorem ipsum dolor sit ipsum dolor amet.</h3>
+        </div>
+        <div class="message">
+            <h3 style="font-weight:bold;">Username</h3>
+            <h3>Lorem ipsum dolor sit amet.</h3>
+        </div>
+        <div class="message">
+            <h3 style="font-weight:bold;">Username</h3>
+            <h3>Lorem ipsum dolor ipsum dolor sit amet.</h3>
+        </div>
+    </div>
+</div>
+<form style="display:flex; justify-content:center;" method="POST" action="." style="display:flex;">
+    <div class="box" style="display: flex; justify-content: center; width: 80%; height: 50px; padding: 3px 30px;">
+        <input style="width: 90%; height: 30px; border-radius: 10px; padding-left: 10px;" type="text" name="content" placeholder="Ваше сообщение" id="chat-message-input">
+        <button style=" border-radius: 10px; height: 35px; padding: 2px 20px; background-color: rgb(117, 173, 216);" id="chat-message-submit">
+            <img style="display: flex; justify-content: center; width: 25px;" src="{% static 'default/fly.svg' %}">
+        </button>
+    </div>
+</form>
+</body>
+{% endblock %}

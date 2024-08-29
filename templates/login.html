@@ -1,0 +1,27 @@
+{% extends 'flatpages/default.html' %} 
+
+{% load static %}
+{% block title %}
+Вход в аккаунт
+{% endblock title %}
+
+<head>
+    <link href="{% static 'default/styles.css' %}" rel="stylesheet">
+    <style>
+        .username_input {
+            height: 25px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body class="body-style">
+    <form class="window" method="POST" action="{% url 'login' %}" enctype="multipart/form-data">
+        <fieldset>
+            {% csrf_token %}
+            <div>Имя пользователя: {{ form.username }}</div><br> 
+            <div>Пароль: {{ form.password }}</div><br> 
+            <input type="submit" class="loginButton" value="Войти">
+        </fieldset>
+    </form>
+</body>

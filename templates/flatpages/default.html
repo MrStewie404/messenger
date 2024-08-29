@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link href="{% static 'default/styles.css' %}" rel="stylesheet">
+</head>
+<body>
+    <div class="navbar-brand" style="height: 50px;">
+        {% if user.is_authenticated %}
+            <div class="box">
+                <a class="text_color" href="/chat/">
+                    <p>Чаты</p>
+                </a>
+                <hr>
+                {% if group %}
+                <a style="color: rgba(169, 169, 169, 0.692);" href="/groups/">
+                    <p>{{ group.name }}</p>
+                </a>
+                {% else %}
+                <a class="text_color" href="/groups/">
+                    <p>Группы</p>
+                </a>
+                {% endif %}
+                <hr>
+                <a style="color:rgb(212, 226, 86)" href="/profile/{{ user.id }}">
+                    <p>{{ user.username }}</p>
+                </a>
+            </div>
+        {% else %}
+            <div class="box">
+                <a style="color: rgb(103, 232, 176);" href="/login/">
+                    <p>Войти</p>
+                </a>
+                <hr>
+                <a style="color: rgb(103, 232, 176);" href="/signup/">
+                    <p>Регистрация</p>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+    <div>
+        {% block content %}
+        {{ flatpage.content }}
+        {% endblock content %}
+    </div>
+</body>
+</html>

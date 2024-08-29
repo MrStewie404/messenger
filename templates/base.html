@@ -1,0 +1,24 @@
+{% extends 'flatpages/default.html' %} 
+
+{% load static %}
+{% block title %}
+Вход в аккаунт
+{% endblock title %}
+
+<head>
+    <link href="{% static 'default/styles.css' %}" rel="stylesheet">
+    <style>
+        .username_input {
+            height: 25px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+{% block content %}
+<body class="body-style">
+    <div>
+        <p>Добро пожаловать</p>
+    </div>    
+</body>
+{% endblock %}

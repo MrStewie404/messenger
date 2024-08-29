@@ -1,0 +1,23 @@
+{% extends 'flatpages/default.html' %} 
+
+{% load static %}
+
+{% block content %}
+<body class="body-style">
+
+  <div class="window">
+    <h1 style="font-size: 30px;">Группы</h1>
+    {% for group in groups %}
+      <div class="box" style="justify-content: space-between; margin-bottom: 10px;"">
+        <div>
+          {{ group.id }}
+          {{ group.name }}
+        </div>
+        <a href="{% url 'group' group.slug %}">
+          <p>Войти</p>
+        </a>
+      </div>  
+    {% endfor %}
+  </div>
+</body>
+{% endblock %}
