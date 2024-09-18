@@ -1,0 +1,125 @@
+{% extends 'flatpages/default.html' %} 
+
+{% load static %}
+
+{% block content %}
+<body class="body-style">
+    <div class="messages" id="chat-messages">
+        {% if messages %}
+            {% for message in messages %}
+                <!-- <img src="{{ message.user.avatar }}""> -->
+                {% if message.sender == request.user %}
+                    <div class="message">
+                {% else %}
+                    <div class="message" style="background-color: rgb(83, 83, 83);">
+                {% endif %}
+                        <div style="display: flex; justify-content: space-between; margin: 0px;">
+                            <p style="color: white;"> {{ message.text }} </p>
+                        </div>
+                        <p style="font-size: small;"> {{ message.date_added|time }} </p>
+                    </div>
+            {% endfor %}
+        {% else %}
+            <div class="message" style="background-color: rgb(142, 55, 55);">
+                <div>
+                    <p style="font-weight:bold;"> System </p>
+                </div>
+                <p style="color: white;"> Привет. Напиши своё первое сообщение в группе <b style="font-weight: 700;">{{ group.name }}</b> </p>
+            </div>
+        {% endif %}
+        
+    </div>
+    <form style="display:flex; justify-content:center;" method="POST" action="." style="display:flex;">
+        <div class="writer">
+            <input class="input-text" type="text" name="content" placeholder="Написать сообщение..." id="chat-message-input">
+            <button class="button-submit" id="chat-message-submit">
+                <img style="display:flex; justify-content: center; width: 25px;" src="{% static 'default/fly.svg' %}">
+            </button>
+        </div>
+    </form>
+</body>
+
+{% block scripts %}
+
+{{ chat_id|json_script:"json-chatid"}}
+{{ request.user.username|json_script:"json-username" }}
+{{ request.user.id|json_script:"json-userID" }}
+
+<script>
+    const chatID = JSON.parse(document.getElementById('json-chatid').textContent)
+    const userName = JSON.parse(document.getElementById('json-username').textContent)
+    const userID = JSON.parse(document.getElementById('json-userID').textContent)
+
+    const chatSocket = new WebSocket(
+        'ws://'
+        + 'localhost:8080'
+        + '/ch/'
+        + chatID
+        + '/'
+    );
+
+    // Добавляем сообщение на клиенте
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        
+        if (data.message.length > 0) {
+            let html = '<div class="message">';
+                html += '<div style="display: flex; justify-content: space-between; margin: 0px">';
+                    // html += '<a href="/profile/' + data.id + '" style="color: rgb(136, 239, 255);">';
+                        html += '<div style="display: flex; align-content: center;">';
+                            // html += '<img src="' + data.avatar_path + '" alt="Аватар" class="avatar" style="width: 30px;">';
+                            html += '<p style="font-weight:bold;">' + data.username + '</p>';
+                        html += '</div>';
+                    html += '</a>';
+                    html += '<p>' + getCurrentTime() + '</p></div>';
+            html += '<p style="color: white; padding: 4px; font-size: large; max-width: none;">' + data.message + '</p></div>';
+                
+            document.querySelector('#chat-messages').innerHTML += html;
+
+            scrollToBottom()
+        }
+    }
+
+    chatSocket.onopen = function(e) {
+        console.log('connected')
+    }
+
+    chatSocket.onclose = function(e) {
+        console.log('connection has closed')
+    }
+
+    // Отправляем сообщение на сервер
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+        e.preventDefault();
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value;
+
+        if (message.length > 0){
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'userID': userID,
+                'chat': chatID,
+            }));
+
+            messageInputDom.value = '';
+        }
+
+        return false;
+    }
+
+    // Получаем настоящее время на клиенте
+    function getCurrentTime() {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, 0);
+        const minutes = now.getMinutes().toString().padStart(2, 0);
+        return `${hours}:${minutes}`;
+    }
+
+    function scrollToBottom() {
+        const objDiv = document.querySelector('#chat-messages');
+        objDiv.scrollTop = objDiv.scrollHeight;
+    }
+    scrollToBottom();
+</script>
+{% endblock %}
+{% endblock %}
