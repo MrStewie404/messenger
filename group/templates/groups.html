@@ -4,20 +4,43 @@
 
 {% block content %}
 <body class="body-style">
-
   <div class="window">
-    <h1 style="font-size: 30px;">Группы</h1>
-    {% for group in groups %}
-      <div class="box" style="justify-content: space-between; margin-bottom: 10px;"">
-        <div>
-          {{ group.id }}
-          {{ group.name }}
-        </div>
-        <a href="{% url 'group' group.slug %}">
-          <p>Войти</p>
+    <div class="groups">
+      <div style="display: flex; justify-content: space-between; padding: 0px 20px;">
+        <h1 style="font-size: 30px;">Группы</h1>
+        <a href="/groups/add/" style="display: flex; justify-content: center; margin: auto 0; width: 35px; height: 35px; border-radius: 5px; background-color: rgb(86, 79, 192);">
+            <img src="{% static 'default/plus.svg' %}" class="white_filter" style="width: 25px;">
         </a>
-      </div>  
-    {% endfor %}
+      </div>
+      {% if groups %}
+        {% for group in groups %}
+        <div style="display: flex; justify-content: space-between;">
+          <a href="{% url 'group' group.slug %}" style="width: 100%;">
+            <div class="group">
+              <p style="color: rgb(255, 255, 255)">{{ group.name }}</p>
+              <img class="white_filter" src="{% static 'default/arrow_right.svg' %}" width="10px">
+            </div>
+          </a>
+          {% if group.creator == request.user %}
+            <a href="{% url 'group_edit' group.slug %}" style="margin-left: 5px;">
+              <div class="group">
+                <img class="white_filter" src="{% static 'default/settings.svg' %}" width="20px">
+              </div>
+            </a>
+            <a href="{% url 'group_delete' group.slug %}" style="margin-left: 5px;">
+              <div class="group" style="background-color: rgb(186, 53, 79);">
+                  <img class="white_filter" src="{% static 'default/bin.svg' %}" width="20px">
+              </div>
+            </a>
+          {% endif %}
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="group" style="background-color: rgb(86, 79, 192);">
+          <p style="color: rgb(255, 255, 255)">Здесь пока ничего. Нажмите <b> + </b> чтобы добавить!</p>
+        </div>
+      {% endif %}
+    </div>  
   </div>
 </body>
 {% endblock %}
