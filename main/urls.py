@@ -1,10 +1,16 @@
 from django.urls import path, include
-from .views import UserDetail, signup, base, login_view, logout_view
+from .views import (signup, user_detail, update_profile, 
+                    avatar_view, UpdatesDetailView,
+                    update_create, login_view, logout_view, base)
 
 urlpatterns = [
-    path('', base, name='base'),
+    path('', base, name='updates'),
+    path('update/add/', update_create, name='update_create'),
+    path('update/<int:pk>/', UpdatesDetailView.as_view(), name='update_create'),
     path('signup/', signup, name='signup'),
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
-    path('profile/<int:pk>/', UserDetail.as_view(), name='profile'),
+    path('profile/<int:pk>/', user_detail, name='profile'),
+    path('profile/<int:pk>/edit/', update_profile, name='update_profile'),
+    path('media/avatars/<str:filename>', avatar_view),
 ]

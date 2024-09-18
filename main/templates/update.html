@@ -1,0 +1,25 @@
+{% extends 'flatpages/default.html' %} 
+
+{% load static %}
+
+{% block content %}
+<body class="body-style">
+    <div class="messages" id="chat-messages">
+        <div class="message">
+            <div>
+                <div style="display: flex; justify-content: space-between;">
+                    <p>{{ update.title }}</p>
+                    <p>{{ update.date|date:"H:i e" }}</p>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                        <div style="display: flex; align-content: center;">
+                            <p style="font-weight:bold; max-width: none;"> {{ update.text }}</p>
+                        </div>
+                </div>
+                <p style="color: white; padding: 4px; font-size: large; max-width: none;"> {{ message.text }} </p>
+            </div>
+        </div>
+    </div>
+    <!-- <button class="button-submit" id="chat-message-submit">Назад</button> -->
+</body>
+{% endblock %}
