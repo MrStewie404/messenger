@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<body class="body-style">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="window">
+            <h2 style="display:flex; justify-content: center; font-size: x-large;">Изменить группу</h2>
+            <fieldset style="gap: 10px;">
+                <div style="display: flex; flex-direction: column;"> Название 
+                {{ form.name }}</div>
+                <div style="display: flex; flex-direction: column;"> Кодовое имя (slug)
+                {{ form.slug }}</div>
+            </fieldset>
+            <input type="submit" value="Сохранить" class="group" style="color: white;">
+        </div>
+    </form>
+</body>
+
+{% endblock %}

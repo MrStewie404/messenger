@@ -1,0 +1,44 @@
+{% extends 'flatpages/default.html' %} 
+
+{% load static %}
+
+{% block content %}
+<body class="body-style">
+  <div class="window" style="width: 700px;">
+    <div class="groups">
+      <div style="display: flex; justify-content: space-between; padding: 0px 20px;">
+        <h1 style="font-size: 30px;">Записи апдейтов</h1>
+        {% if request.user.id == 1 %}
+          <a href="/update/add/" style="display: flex; justify-content: center; margin: auto 0; width: 35px; height: 35px; border-radius: 5px; background-color: rgb(86, 79, 192);">
+              <img src="{% static 'default/plus.svg' %}" class="white_filter" style="width: 25px;">
+          </a>
+        {% endif %}
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+          {% for update in updates %}
+            <a href="/update/{{ update.id }}/">
+              <div class="group" style="width: 300px;">
+                <p style="color: rgb(255, 255, 255)">{{ update.date|date:"d.m" }}</p>
+                <p style="color: rgb(255, 255, 255)">{{ update.title }}</p>
+                <img class="white_filter" src="{% static 'default/arrow_right.svg' %}" width="20px" height="20px">
+              </div>
+            </a>
+          {% endfor %}
+      </div>
+    </div>  
+    <h1 style="font-size: 30px;">Пользователи</h1>
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      {% for user_view in users %}
+        {% if user_view.id != 0 %}
+          <a style="color: white;" href="/profile/{{ user_view.id }}/">
+            <div class="group" style="width: 300px;">
+              <p> {{ user_view.first_name }} {{ user_view.last_name }}</p>
+              <img class="white_filter" src="{% static 'default/arrow_right.svg' %}" width="20px" height="20px">
+            </div>
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</body>
+{% endblock %}

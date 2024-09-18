@@ -1,0 +1,41 @@
+{% extends "flatpages/default.html" %}
+
+{% block content %}
+<div class="window" style="width: 300px;">
+    <form id="update-profile-form" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div style="display: flex; flex-direction: row; justify-content: center;">
+            <img class="avatar" style="width: 100px; height: 100px; margin: auto;" src="/{{ avatar_form.path.value }}" >
+            <div>
+                <input class="input-text" style="background-color: rgba(255, 255, 255, 0); color: black;" type="text" name="first_name" value="{{ user_form.first_name.value }}" maxlength="18" id="id_first_name">
+                <input class="input-text" style="background-color: rgba(255, 255, 255, 0); color: black;" type="text" name="last_name" value="{{ user_form.last_name.value }}" maxlength="18" id="id_last_name">
+            </div>
+        </div>
+        Юзернейм
+        <input class="input-text" style="background-color: rgba(255, 255, 255, 0); color: black;"  type="text" name="username" value="{{ user_form.username.value }}" maxlength="24" id="id_username">
+        {{ avatar_form.path }}
+    </form>
+</div>
+<button id="save-profile-button">Сохранить</button>
+
+<script>
+  const saveProfileButton = document.getElementById('save-profile-button');
+  const updateProfileForm = document.getElementById('update-profile-form');
+
+  saveProfileButton.addEventListener('click', () => {
+    const formData = new FormData(updateProfileForm);
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/profile/{{ user.pk }}/edit/');
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        window.location.href = `/profile/{{ user.pk }}/`;
+      } else {
+        console.error('Ошибка при обновлении профиля');
+      }
+    };
+    xhr.send(formData);
+  });
+</script>
+
+{% endblock %}

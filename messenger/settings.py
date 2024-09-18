@@ -15,6 +15,7 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # Quick-start development settings - unsuitable for production
@@ -39,7 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',
-    'group'
+    'group',
+    'chat',
+    'channels',
+    'compressor',
 ]
 
 MIDDLEWARE = [
@@ -70,9 +74,15 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'messenger.wsgi.application'
+# WSGI_APPLICATION = 'messenger.wsgi.application'
+ASGI_APPLICATION = 'messenger.asgi.application'
 CHANNEL_LAYERS = {
-    
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer'
+    },
+    'CONFIG': {
+        "hosts": [('127.0.0.1', 8080)],
+    },
 }
 
 
@@ -125,13 +135,22 @@ USE_TZ = True
 
 # AUTH_USER_MODEL = 'main.User'
 # LOGIN_REDIRECT_URL = '/profile/'
+
 LOGIN_URL = '/login/'
 
 SITE_ID = 1 
 STATIC_URL = '/static/'
+# STATIC_URL = '/staticfiles/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+# django-compressor
+COMPRESS_ENABLED = True
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

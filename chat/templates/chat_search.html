@@ -1,0 +1,39 @@
+{% extends 'flatpages/default.html' %} 
+
+{% load static %}
+{% load filters %}
+
+{% block content %}
+
+<div class="window">
+    <div class="groups" style="display: flex; justify-content: center; padding: 0px 20px;">
+    <div style="display: flex; flex-direction: column; justify-content: center; margin: 20px auto 0 auto;">
+        <!-- <h1>Поиск по username:</h1> -->
+    <form method="get" action="">
+        <input type="text" name="q" value="{{ query }}" placeholde=none>
+        <input type="submit" value="Поиск">
+    </form>
+    </div>
+    {% if chats %}
+        {% for chat in chats %}
+            <a href="{% url 'chat' chat.id %}">
+                <div class="group">
+                    <p style="color: white;">{{ chat.user.username }}</p>
+                    <img class="white_filter" src="{% static 'default/arrow_right.svg' %}" width="10px">
+                </div>
+            </a>
+        {% endfor %}
+    {% elif user_searched %}
+        {% for user in user_searched %}
+        <a href="{% url 'create_chat' user.id %}" style="margin-left: 5px;">
+            <div class="group">
+                <p style="color: white;">{{ user.first_name }} {{ user.last_name }}</p>
+                <img class="white_filter" src="{% static 'default/new_chat.svg' %}" width="20px">
+            </div>
+        </a>
+        {% endfor %}
+    {% endif %}
+    </div>
+</div>
+
+{% endblock %}
