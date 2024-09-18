@@ -7,7 +7,10 @@
 
 <form class="window" method="post">
 {% csrf_token %}
-    <fieldset>
+<div style="display: flex; justify-content: center;">
+    <p style="font-weight:bolder; color: red;">* Ваш пароль должен быть не меньше 8 символов</p>
+</div>
+<fieldset>
         {% csrf_token %}
         Имя
         <div>

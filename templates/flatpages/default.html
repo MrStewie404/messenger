@@ -1,49 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% load static %}
     <link href="{% static 'default/styles.css' %}" rel="stylesheet">
+    <title>Link up</title>
 </head>
 <body>
     <div class="navbar-brand" style="height: 50px;">
         {% if user.is_authenticated %}
             <div class="box">
-                <a class="text_color" href="/chat/">
+                <a class="text_color" href="/chats/">
                     <p>Чаты</p>
                 </a>
                 <hr>
                 {% if group %}
                 <a style="color: rgba(169, 169, 169, 0.692);" href="/groups/">
-                    <p>{{ group.name }}</p>
+                    <span>{{ group.name }}</span>
                 </a>
                 {% else %}
                 <a class="text_color" href="/groups/">
-                    <p>Группы</p>
+                    <span>Группы</span>
                 </a>
                 {% endif %}
                 <hr>
                 <a style="color:rgb(212, 226, 86)" href="/profile/{{ user.id }}">
-                    <p>{{ user.username }}</p>
+                    <span>{{ user.username }}</spanp>
                 </a>
             </div>
         {% else %}
             <div class="box">
                 <a style="color: rgb(103, 232, 176);" href="/login/">
-                    <p>Войти</p>
+                    <span>Войти</span>
                 </a>
                 <hr>
                 <a style="color: rgb(103, 232, 176);" href="/signup/">
-                    <p>Регистрация</p>
+                    <span>Регистрация</span>
                 </a>
             </div>
         {% endif %}
     </div>
     <div>
         {% block content %}
-        {{ flatpage.content }}
-        {% endblock content %}
+        {% endblock %}
+        {% block scripts %}
+        <script>
+            var local_ip = '192.168.0.103:8000'
+        </script>
+        {% endblock %}
     </div>
 </body>
 </html>
