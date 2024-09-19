@@ -7,8 +7,8 @@
     <link href="{% static 'default/styles.css' %}" rel="stylesheet">
     <title>Link up</title>
 </head>
-<body>
-    <div class="navbar-brand" style="height: 50px;">
+<body id="body-style">
+    <div class="navbar-brand" style="height: 50px;" id="navbar-brand">
         {% if user.is_authenticated %}
             <div class="box">
                 <a class="text_color" href="/chats/">
@@ -44,11 +44,20 @@
     <div>
         {% block content %}
         {% endblock %}
-        {% block scripts %}
         <script>
-            var local_ip = '192.168.0.103:8000'
+            const navbarRGB = localStorage.getItem("navbar-color")
+            const bodyBackground = localStorage.getItem("body-background")
+            if (navbarRGB == null) {
+            } else {
+                const navBarBrand = document.getElementById('navbar-brand')
+                navBarBrand.setAttribute('style', `background-color:rgb(${navbarRGB});`)
+            }
+            if (bodyBackground == null) {
+            } else {
+                const body = document.getElementById('body-style')
+                body.setAttribute('style', `background-color:rgb(${bodyBackground});`)
+            }
         </script>
-        {% endblock %}
     </div>
 </body>
 </html>

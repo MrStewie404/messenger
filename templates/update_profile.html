@@ -2,6 +2,7 @@
 
 {% block content %}
 <div class="window" style="width: 300px;">
+  <div style="display: flex; justify-content: center; flex-direction: column; margin-bottom: 50px;">
     <form id="update-profile-form" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
@@ -16,12 +17,46 @@
         <input class="input-text" style="background-color: rgba(255, 255, 255, 0); color: black;"  type="text" name="username" value="{{ user_form.username.value }}" maxlength="24" id="id_username">
         {{ avatar_form.path }}
     </form>
+    <input type="button" id="save-profile-button" value="Сохранить">
+  </div>
+  <div>
+    <div>
+      RGB для navbar: 
+      <input id="rgb-navbar" type="text" value="">
+      <input id="navbar-save" type="button" value="Применить">
+    </div>
+    <div>
+      RGB для body: 
+      <input id="rgb-body" type="text" value="">
+      <input id="body-save" type="button" value="Применить">
+    </div>
+  </div>
 </div>
-<button id="save-profile-button">Сохранить</button>
 
 <script>
   const saveProfileButton = document.getElementById('save-profile-button');
   const updateProfileForm = document.getElementById('update-profile-form');
+  const navBarBrand = document.getElementById('navbar-brand')
+  const navbar = document.getElementById('rgb-navbar')
+  const navbarSave = document.getElementById('navbar-save')
+  const bodyStyle = document.getElementById('body-style')
+  const rgbBody = document.getElementById('rgb-body')
+  const bodySave = document.getElementById('body-save')
+
+
+  navbarSave.addEventListener("click", function() {
+    navBarBrand.setAttribute('style', `background-color:rgb(${navbar.value});`)
+    localStorage.setItem('navbar-color', navbar.value)
+    console.log(navbar.value)
+
+  })
+
+  bodySave.addEventListener("click", function() {
+    bodyStyle.setAttribute('style', `background-color:rgb(${rgbBody.value});`)
+    localStorage.setItem('body-background', rgbBody.value)
+    console.log(rgbBody.value)
+
+  })
 
   saveProfileButton.addEventListener('click', () => {
     const formData = new FormData(updateProfileForm);
