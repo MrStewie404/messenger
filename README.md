@@ -1,8 +1,19 @@
 # messenger
-###### ASGI: uvicorn messenger.asgi:application --host localhost --port 8080
+
+1. Установка компонентов:
+##### pip install -r requirements.txt
+
+3. Для корректной работы сообщений (отправки и получения), нужно запустить uvicorn:
+##### uvicorn messenger.asgi:application --host localhost --port 8080
+3. Запуск джанго:
+##### python manage.py runserver
+
+<hr>
+Чаты
+<img width="1792" alt="Снимок экрана 2024-09-19 в 13 28 24" src="https://github.com/user-attachments/assets/37dab2aa-cdd9-4d9a-b517-b0e613c597d1">
 
 Группы
-<img width="1388" alt="image" src="https://github.com/user-attachments/assets/0d9942de-d8f7-4600-977c-47cc304da6f6">
+<img width="1792" alt="Снимок экрана 2024-09-19 в 13 27 55" src="https://github.com/user-attachments/assets/0150727c-3d62-4b1c-947a-92d50d829fe6">
 
-Группа Python
-<img width="1388" alt="Снимок экрана 2024-08-29 в 22 35 48" src="https://github.com/user-attachments/assets/dcbd14d5-0f14-43c5-88f1-b8e2d42fa8c2">
+Профиль
+<img width="1792" alt="Снимок экрана 2024-09-19 в 13 29 45" src="https://github.com/user-attachments/assets/02d807fb-0252-4070-ba44-70dadf082a34">
