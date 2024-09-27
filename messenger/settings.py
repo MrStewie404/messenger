@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'group',
     'chat',
     'channels',
-    'compressor',
 ]
 
 MIDDLEWARE = [
@@ -140,17 +139,9 @@ LOGIN_URL = '/login/'
 
 SITE_ID = 1 
 STATIC_URL = '/static/'
-# STATIC_URL = '/staticfiles/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-
-# django-compressor
-COMPRESS_ENABLED = True
-COMPRESS_PRECOMPILERS = (
-    ('text/x-scss', 'django_libsass.SassCompiler'),
-)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

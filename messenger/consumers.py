@@ -13,7 +13,7 @@ from chat.models import Message as ChatMessage, Chat
 
 class GroupConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.room_name = self.scope['url_route']['kwargs']['room_name']
+        self.room_name = self.scope['url_route']['kwargs']['group_name']
         self.room_group_name = 'chat_%s' % self.room_name
         await self.channel_layer.group_add(
             self.room_group_name,
@@ -54,7 +54,6 @@ class GroupConsumer(AsyncWebsocketConsumer):
 
         await self.send(text_data=json.dumps({
             'message': message,
-            # 'username': username,
             'first_name': first_name,
             'last_name': last_name,  
             'group': group,
@@ -93,10 +92,10 @@ class GroupConsumer(AsyncWebsocketConsumer):
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.room_name = self.scope['url_route']['kwargs']['room_name']
-        self.room_group_name = 'chat_%s' % self.room_name
+        self.chat_name = self.scope['url_route']['kwargs']['chat_name']
+        self.room_chat_name = 'chat_%s' % self.chat_name
         await self.channel_layer.group_add(
-            self.room_group_name,
+            self.room_chat_name,
             self.channel_name
         )
         await self.accept()
@@ -116,7 +115,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.save_message(user_id, chat_id, message)
 
         await self.channel_layer.group_send(
-            self.room_group_name,
+            self.room_chat_name,
             {
                 'type': 'chat_message',
                 'message': message,
@@ -146,19 +145,53 @@ class ChatConsumer(AsyncWebsocketConsumer):
         user = User.objects.get(id=id)
         user_id = user.id
         username = user.username
-        # messages = ChatMessage.objects.filter(user=user)
-
-        # avatars = []
-        # for message in messages:
-        #     user = message.sender
-        #     avatar = user.avatars.first()
-        #     avatars.append(avatar)
-
-        # return str(avatars[0].path.url), user_id, username
         return user_id, username
 
     @sync_to_async
     def save_message(self, id, chat_id, message):
+        sender = User.objects.get(id=id)
+
+        ChatMessage.objects.create(
+            sender=sender, 
+            chat_id=chat_id,
+            text=message
+        )
+
+class RegistrationConsumer(AsyncWebsocketConsumer):
+    # async def connect(self):
+    #     self.room_name = self.scope['url_route']['kwargs']['username']
+    #     self.room_group_name = 'chat_%s' % self.room_name
+    #     await self.channel_layer.group_add(
+    #         self.room_group_name,
+    #         self.channel_name
+    #     )
+    #     await self.accept()
+
+    async def connect(self):
+        await self.accept()
+        await self.send(text_data=json.dumps({'message': 'Соединение установлено!'}))
+
+    async def disconnect(self, _):
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+
+    async def receive(self, text_data):
+        data = json.loads(text_data)
+        user = await self.get_user(data['username'])
+        result = True if user else False
+
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'result': result
+            }
+        )
+
+
+    @sync_to_async
+    def get_user(self, id, chat_id, message):
         sender = User.objects.get(id=id)
 
         ChatMessage.objects.create(

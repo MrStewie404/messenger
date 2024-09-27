@@ -1,18 +1,17 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% load static %}
     <link href="{% static 'default/styles.css' %}" rel="stylesheet">
-    <title>Link up</title>
 </head>
-<body id="body-style">
-    <div class="navbar-brand" style="height: 50px;" id="navbar-brand">
-        {% if user.is_authenticated %}
+<body>
+    {% if user.is_authenticated %}
+        <div class="navbar-brand" style="height: 50px;">
             <div class="box">
                 <a class="text_color" href="/chats/">
-                    <span>Чаты<span>
+                    <p>Чаты</p>
                 </a>
                 <hr>
                 {% if group %}
@@ -29,35 +28,11 @@
                     <span>{{ user.username }}</spanp>
                 </a>
             </div>
-        {% else %}
-            <div class="box">
-                <a style="color: rgb(103, 232, 176);" href="/login/">
-                    <span>Войти</span>
-                </a>
-                <hr>
-                <a style="color: rgb(103, 232, 176);" href="/signup/">
-                    <span>Регистрация</span>
-                </a>
-            </div>
+        </div>
         {% endif %}
-    </div>
     <div>
         {% block content %}
         {% endblock %}
-        <script>
-            const navbarRGB = localStorage.getItem("navbar-color")
-            const bodyBackground = localStorage.getItem("body-background")
-            if (navbarRGB == null) {
-            } else {
-                const navBarBrand = document.getElementById('navbar-brand')
-                navBarBrand.setAttribute('style', `background-color:rgb(${navbarRGB});`)
-            }
-            if (bodyBackground == null) {
-            } else {
-                const body = document.getElementById('body-style')
-                body.setAttribute('style', `background-color:rgb(${bodyBackground});`)
-            }
-        </script>
     </div>
 </body>
 </html>

@@ -7,6 +7,7 @@
     <div class="messages" id="chat-messages">
         {% if messages %}
             {% for message in messages %}
+                <!-- <img src="{{ message.user.avatar }}""> -->
                 {% if message.sender == request.user %}
                     <div class="message">
                 {% else %}
@@ -19,9 +20,11 @@
                     </div>
             {% endfor %}
         {% else %}
-            <div class="message" style="background-color: rgb(142, 55, 55); width: 60%; margin: 0 auto; text-align: center;">
-                <p style="color: white; font-size: x-large; margin-bottom: 20px;">Это начало</p>
-                <p style="color: white;">Вашего удивительного общения. Каким оно будет - зависит от вас</p>
+            <div class="message" style="background-color: rgb(142, 55, 55);">
+                <div>
+                    <p style="font-weight:bold;"> System </p>
+                </div>
+                <p style="color: white;"> Это начало вашего личного чата! <b style="font-weight: 700;">{{ group.name }}</b> </p>
             </div>
         {% endif %}
         
@@ -48,7 +51,11 @@
     const userID = JSON.parse(document.getElementById('json-userID').textContent)
 
     const chatSocket = new WebSocket(
-        `ws://localhost:8080/ch/${chatID}/`
+        'ws://'
+        + '192.168.0.103:8080'
+        + '/ch/'
+        + chatID
+        + '/'
     );
 
     // Добавляем сообщение на клиенте
@@ -58,12 +65,14 @@
         if (data.message.length > 0) {
             let html = '<div class="message">';
                 html += '<div style="display: flex; justify-content: space-between; margin: 0px">';
+                    // html += '<a href="/profile/' + data.id + '" style="color: rgb(136, 239, 255);">';
                         html += '<div style="display: flex; align-content: center;">';
-                            html += `<p style="font-weight:bold;">${data.username}</p>`;
+                            // html += '<img src="' + data.avatar_path + '" alt="Аватар" class="avatar" style="width: 30px;">';
+                            html += '<p style="font-weight:bold;">' + data.username + '</p>';
                         html += '</div>';
                     html += '</a>';
-                html += `<p>${getCurrentTime()}</p></div>`;
-            html += `<p style="color: white; padding: 4px; font-size: large; max-width: none;">${data.message}</p></div>`;
+                    html += '<p>' + getCurrentTime() + '</p></div>';
+            html += '<p style="color: white; padding: 4px; font-size: large; max-width: none;">' + data.message + '</p></div>';
                 
             document.querySelector('#chat-messages').innerHTML += html;
 
@@ -76,7 +85,7 @@
     }
 
     chatSocket.onclose = function(e) {
-        alert('Нет соединения')
+        console.log('connection has closed')
     }
 
     // Отправляем сообщение на сервер

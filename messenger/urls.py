@@ -15,16 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from main.views import login_redirect
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('', include('main.urls')),
     path('groups/', include('group.urls')),
     path('chats/', include('chat.urls')),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('accounts/profile/', login_redirect, name='login_redirect'),
+    path('accounts/', include('django.contrib.auth.urls')),  # Это добавляет все стандартные пути для авторизации
 ]
-
-urlpatterns += staticfiles_urlpatterns()

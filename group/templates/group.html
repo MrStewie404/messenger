@@ -14,11 +14,7 @@
                                 <a href="/profile/{{ message.user.id }}/" style="color: rgb(136, 239, 255);">
                                     <div style="display: flex; align-content: center;">
                                         <img src="{{ message.user.avatars.first.path.url }}" class="avatar" style="width: 30px;">
-                                        {% if message.user.first_name or message.user.last_name %}
-                                            <p style="font-weight:bold;"> {{ message.user.first_name }} {{ message.user.last_name }}</p>
-                                        {% else %}
-                                            <p style="font-weight:bold;">@{{ message.user.username }}</p>
-                                        {% endif %}
+                                        <p style="font-weight:bold;"> {{ message.user.first_name }} {{ message.user.last_name }}</p>
                                     </div>
                                 </a>
                                 <p> {{ message.date_added|date:"H:i e" }} </p>
@@ -27,19 +23,19 @@
                         </div>
                     </div>
                 {% else %}
-                    <div class="message" style="background-color: rgb(83, 83, 83);">
+                    <div class="message" style="background-color: rgb(64, 64, 64);">
                         <div style="display: flex; justify-content: space-between; margin: 0px;">
                             <a href="/profile/{{ message.user.id }}/" style="color: white;">
                                 <div style="display: flex; justify-content: center;">
                                     <img src="{{ message.user.avatars.first.path.url }}" class="avatar" style="width: 30px; height: 30px;">
-                                    {% if message.user.first_name or message.user.last_name %}
-                                        <p style="font-weight:bold;"> {{ message.user.first_name }} {{ message.user.last_name }}</p>
+                                    {% if message.user.is_superuser %}        
+                                        <p style="font-weight:bold; color: gold;""> {{ message.user.first_name }} {{ message.user.last_name }}</p>
                                     {% else %}
-                                        <p style="font-weight:bold;">@{{ message.user.username }}</p>
+                                    <p style="font-weight:bold;""> {{ message.user.first_name }} {{ message.user.last_name }}</p>
                                     {% endif %}
                                 </div>
                             </a>
-                            <p> {{ message.date_added|time }} </p>
+                            <p> {{ message.date_added|date:"H:i e" }} </p>
                         </div>
                         <p style="color: white; padding: 4px; font-size: large; max-width: none;"> {{ message.text }} </p>
                     </div>
@@ -68,31 +64,28 @@
 
 {% block scripts %}
 
-{{ group.slug|json_script:"json-roomname"}}
+{{ group.slug|json_script:"json-roomname" }}
 {{ request.user.username|json_script:"json-username" }}
 <script>
     const groupName = JSON.parse(document.getElementById('json-roomname').textContent)
     const userName = JSON.parse(document.getElementById('json-username').textContent)
 
-    const chatSocket = new WebSocket(
+    const groupSocket = new WebSocket(
         `ws://localhost:8080/gr/${groupName}/`
     );
 
     // Добавляем сообщение на клиенте
-    chatSocket.onmessage = function(e) {
+    groupSocket.onmessage = function(e) {
 
         const data = JSON.parse(e.data);
         
         if (data.message.length > 0) {
             let html = '<div class="message">';
                     html += '<div style="display: flex; justify-content: space-between; margin: 0px">';
-                        html += `<a href="/profile/${data.id}"style="color: rgb(136, 239, 255);">`;
+                        html += `<a href="/profile/${data.id}" style="color: rgb(136, 239, 255);">`;
                             html += '<div style="display: flex; align-content: center;">';
                                 html += `<img src="${data.avatar_path}" alt="Аватар" class="avatar" style="width: 30px;">`;
-                                if (data.first_name || data.first_name)
-                                    html += `<p style="font-weight:bold;">${data.first_name} ${data.last_name}</p>`;
-                                else
-                                    html += `<p style="font-weight:bold;">${data.username}</p>`;
+                                html += `<p style="font-weight:bold;">${data.first_name} ${data.last_name}</p>`;
                             html += '</div>';
                         html += '</a>';
                         html += `<p>${getCurrentTime()}</p></div>`;
@@ -103,12 +96,12 @@
         }
     }
 
-    chatSocket.onopen = function(e) {
+    groupSocket.onopen = function(e) {
         console.log('connected')
     }
 
-    chatSocket.onclose = function(e) {
-        alert('Нет соединения')
+    groupSocket.onclose = function(e) {
+        console.log('connection has closed')
     }
 
     // Отправляем сообщение на сервер
@@ -118,7 +111,7 @@
         const message = messageInputDom.value;
 
         if (message.length > 0){
-            chatSocket.send(JSON.stringify({
+            groupSocket.send(JSON.stringify({
                 'message': message,
                 'username': userName,
                 'group': groupName,
@@ -141,7 +134,7 @@
     // Прокручиваем сообщения вверх
     function scrollToBottom() {
         const objDiv = document.querySelector('#chat-messages');
-        objDiv.scrollTop = objDiv.scrollHeight;
+        objDiv.scrollTop = (objDiv.scrollHeight);
     }
     scrollToBottom();
 </script>

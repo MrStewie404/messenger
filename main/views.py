@@ -1,5 +1,7 @@
+from django.forms import inlineformset_factory
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 from django.views.generic import DetailView, ListView
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
@@ -27,7 +29,7 @@ def user_detail(request, pk):
     except:
         Avatars.objects.create(user=user)
         avatar = Avatars.objects.get(user=user)
-    return render(request, 'profile.html', {'user': user, 'avatar': avatar})
+    return render(request, 'profile.html', {'profile': user, 'avatar': avatar})
 
 def avatar_view(filename):
     image_path = os.path.join(settings.STATIC_URL, 'avatars', filename)
@@ -63,8 +65,8 @@ def update_profile(request, pk):
         if user_form.is_valid() and avatar_form.is_valid():
             try:
                 os.remove(str(settings.BASE_DIR) + '/static/media/avatars/' + str(avatar_last_path))
-            except:
-                ...
+            except Exception as e:
+                print(e)
             user_form.save()
             avatar_form.save()
             return redirect(f'/profile/{user.pk}')
@@ -79,19 +81,15 @@ def update_profile(request, pk):
     
     return render(request, 'update_profile.html', context)
 
-# class UpdatesListView(ListView):
-#     model = Updates
-#     template_name = 'updates.html'
-#     context_object_name = 'updates'
 
-#     def get_queryset(self):
-#         return super().get_queryset().order_by('-date')
 
-def base(request):
-    updates = Updates.objects.all().order_by('-date')
-    users = User.objects.all()
+class UpdatesListView(ListView):
+    model = Updates
+    template_name = 'updates.html'
+    context_object_name = 'updates'
 
-    return render(request, 'updates.html', {'updates': updates, 'users': users})
+    def get_queryset(self):
+        return super().get_queryset().order_by('-date')
 
 class UpdatesDetailView(DetailView):
     model = Updates
@@ -100,13 +98,10 @@ class UpdatesDetailView(DetailView):
 
 def update_create(request):
     if request.method == 'POST':
-        form = UpdateForm(request.POST)
+        form = UpdateForm(request.POST)  # Initialize with POST data
         if form.is_valid():
             form.save()
             return redirect('updates')
     else:
-        form = UpdateForm()
+        form = UpdateForm()  # Create an empty form for GET requests
     return render(request, 'create_update.html', {'form': form})
-
-def login_redirect(request):
-    return redirect('/')

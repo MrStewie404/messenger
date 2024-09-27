@@ -21,7 +21,7 @@
               <img class="white_filter" src="{% static 'default/arrow_right.svg' %}" width="10px">
             </div>
           </a>
-          {% if group.creator == request.user %}
+          <!-- {% if group.creator == request.user %} -->
             <a href="{% url 'group_edit' group.slug %}" style="margin-left: 5px;">
               <div class="group">
                 <img class="white_filter" src="{% static 'default/settings.svg' %}" width="20px">
@@ -32,7 +32,7 @@
                   <img class="white_filter" src="{% static 'default/bin.svg' %}" width="20px">
               </div>
             </a>
-          {% endif %}
+          <!-- {% endif %} -->
         </div>
         {% endfor %}
       {% else %}

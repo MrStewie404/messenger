@@ -1,27 +1,157 @@
-{% extends 'flatpages/default.html' %}
+{% extends "flatpages/default.html" %}
+<!-- {% load i18n %} -->
 
 {% load static %}
-
+    
 {% block content %}
-
-<form class="window" method="post" action="{% url 'login' %}">
-    <fieldset>
-        {% csrf_token %}
-        <div>
-            Имя
-            <div>
-                <input type="username" name="username">
-            </div>
+<body class="body-style" style="background-color: rgb(50, 50, 50);">
+    <div style="display: flex; 
+    flex-direction: column;
+    margin: 15% auto;
+    ">
+        <div style="display: flex; flex-direction: column;">
+            <img id="logotype" class="white_filter field hidden" style="margin: auto auto; height: 80px;" src="{% static 'default/logo.svg' %}">
+            <!-- <p id="reg-text" class="field hidden" style="max-width: 100%; margin: 20px auto; font-size: 40px; color: white;">Регистрация</p> -->
+            <p id="join-text" class="field hidden" style="max-width: 100%; margin: 20px auto; font-size: 40px; color: white;">Вход</p>
         </div>
-        <div>
-            Пароль
-            <div>
-                <input type="password" name="password">
-            </div>
-        </div>
-    </fieldset>
-    <input type="hidden" name="next" value="{{ next }}">
-    <input class="loginButton" type="submit" value="Login">
-</form>
 
+        <div class="window" style="
+        display: flex;
+        flex-direction: column;
+        text-align: center; 
+        margin-top: 0;
+        ">
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <div id="active-element1" class="field hidden">
+                    <input class="input-text" id="username" type="text" name="username" placeholder="Имя пользователя">
+                </div>
+
+                
+                <div id="active-element2" class="field hidden">
+                    <input class="input-text" type="password" name="password" placeholder="Пароль">
+                </div>
+
+                <button id="join-button" class="field hidden" style="font-size: larger; margin: 20px auto; padding: 5px 65px; border: 0px solid; background-color: rgb(90, 85, 180); color: rgb(195, 195, 195);">
+                    Войти
+                </button>
+
+                <p id="check-username" class="field hidden none" style="margin: 10px auto; color: rgb(190, 80, 80);">Это имя занято</p>
+            </form>
+            <button id="account-doesnt-exist-text" class="field hidden" style="margin: 0px auto; border: 0px solid; background-color: rgb(50, 50, 50); color: rgb(195, 195, 195);">
+                У вас нет аккаунта?
+            </button>
+        </div>
+    <div style="
+    display: block;
+    position:static;
+    /* top: 20%; */
+    /* left: 20%; */
+    /* transform: translate(-20%, -20%); */
+    " class="field visible">
+        <button id="error-button" class="field" style="width: 100px; background-color: red; color: white; justify-content: center;">Ошибка</button>
+        <!-- <button id="confirm-button" class="field" style="width: 100px; background-color: rgb(0, 171, 0); color: white; justify-content: center;">Успех</button> -->
+        <!-- <button id="reset-button" class="field" style="width: 100px; color: white; justify-content: center;">Сбросить</button> -->
+        <button id="change-form" class="field" style="width: 100px; background-color: cadetblue; color: white; justify-content: center;">Изменить форму</button>
+    </div>
+</body>
+
+
+{% block scripts %}
+{{ username|json_script:"json-username" }}
+
+<script>
+
+    // '#change-form', 
+    document.querySelector('#account-doesnt-exist-text').onclick = function() {
+        const logotypeElement = document.querySelector('#logotype');
+        const joinText = document.querySelector('#join-text');
+        const activeElement = document.querySelector('#active-element1');
+        const secondActiveElement = document.querySelector('#active-element2');
+        const joinButton = document.querySelector('#join-button')
+        const accountDoesntExistText = document.querySelector('#account-doesnt-exist-text')
+
+        const time = 100
+
+        setTimeout(() => {
+            logotypeElement.classList.add('hidden')
+            logotypeElement.classList.remove('visible')
+        }, time+80)
+
+        setTimeout(() =>{
+            joinText.classList.add('hidden')
+            joinText.classList.remove('visible')
+        }, time+160)
+
+        setTimeout(() =>{
+            activeElement.classList.add('hidden')
+            activeElement.classList.remove('visible')
+        }, time+240)
+
+        setTimeout(() => {
+            secondActiveElement.classList.add('hidden')
+            secondActiveElement.classList.remove('visible')
+        }, time+300)
+
+        setTimeout(() => {
+            joinButton.classList.add('hidden')
+            joinButton.classList.remove('visible')
+        }, time+360)
+
+        setTimeout(() => {
+            accountDoesntExistText.classList.add('hidden')
+            accountDoesntExistText.classList.remove('visible')
+        }, time+420)
+
+        setTimeout(() => {
+            window.location.href = "/signup/";
+        }, time+720)
+
+    }
+
+    function loading() {
+        const logotypeElement = document.querySelector('#logotype');
+        const joinText = document.querySelector('#join-text');
+        const activeElement = document.querySelector('#active-element1');
+        const secondActiveElement = document.querySelector('#active-element2')
+        const joinButton = document.querySelector('#join-button')
+        const accountDoesntExistText = document.querySelector('#account-doesnt-exist-text')
+
+        const time = 0
+
+        setTimeout(() => {
+            logotypeElement.classList.remove('hidden')
+            logotypeElement.classList.add('visible')
+        }, time+100)
+
+        setTimeout(() =>{
+            joinText.classList.remove('hidden')
+            joinText.classList.add('visible')
+        }, time+200)
+
+        setTimeout(() =>{
+            activeElement.classList.remove('hidden')
+            activeElement.classList.add('visible')
+        }, time+300)
+
+        setTimeout(() => {
+            secondActiveElement.classList.remove('hidden')
+            secondActiveElement.classList.add('visible')
+        }, time+400)
+
+        setTimeout(() => {
+            joinButton.classList.remove('hidden')
+            joinButton.classList.add('visible')
+        }, time+500)
+
+        setTimeout(() => {
+            accountDoesntExistText.classList.remove('hidden')
+            accountDoesntExistText.classList.add('visible')
+        }, time+600)
+        
+    }
+    loading()
+</script>
+
+{% endblock %}
 {% endblock %}

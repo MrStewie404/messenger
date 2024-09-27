@@ -1,43 +1,236 @@
 {% extends "flatpages/default.html" %}
-{% load i18n %}
+<!-- {% load i18n %} -->
 
 {% load static %}
-
+    
 {% block content %}
-
-<form class="window" method="post">
-{% csrf_token %}
-<div style="display: flex; justify-content: center;">
-    <p style="font-weight:bolder; color: red;">* Ваш пароль должен быть не меньше 8 символов</p>
-</div>
-<fieldset>
-        {% csrf_token %}
-        Имя
-        <div>
-            <input type="username" name="username">
+<body class="body-style" style="background-color: rgb(50, 50, 50);">
+    <div style="display: flex; 
+    flex-direction: column;
+    margin: 15% auto;
+    ">
+        <div style="display: flex; flex-direction: column;">
+            <img id="logotype" class="white_filter field hidden" style="margin: auto auto; height: 80px;" src="{% static 'default/logo.svg' %}">
+            <p id="reg-text" class="field hidden" style="max-width: 100%; margin: 20px auto; font-size: 40px; color: white;">Регистрация</p>
+            <p id="join-text" class="field hidden none" style="max-width: 100%; margin: 20px auto; font-size: 40px; color: white;">Вход</p>
         </div>
-        Пароль
-        <div>
-            <input type="password" name="password1">
+
+        <div class="window" style="
+        display: flex;
+        flex-direction: column;
+        text-align: center; 
+        margin-top: 0;
+        ">
+            <form method="post">
+                {% csrf_token %}
+                <div id="active-element1" class="field hidden">
+                    <input class="input-text" id="username" type="text" name="username" placeholder="Имя пользователя">
+                        <!-- <p id="join-text" class="field visible" style="color: rgb(195, 195, 195); max-width: 100%; font-size: 15px;">Уже есть аккаунт?</p> -->
+                    </div>
+
+                <div id="active-element2" class="field hidden none">
+                    <input id="password1" type="password" name="password1" placeholder="Пароль"
+                    style="
+                    text-align: center;
+                    border: 5px solid;
+                    border-radius: 12px;
+                    border-color: rgb(90, 85, 180);
+                    margin: 10px;
+                    height: 30px;
+                    width: 200px;
+                    background-color: rgb(50, 50, 50);
+                    color: azure;
+                    ">
+                </div>
+                
+                <div id="active-element3" class="field hidden none">
+                    <input id="password2" type="password" name="password2" placeholder="Подтвердите пароль"
+                    style="
+                    text-align: center;
+                    border: 5px solid;
+                    border-radius: 12px;
+                    border-color: rgb(90, 85, 180);
+                    margin: 10px;
+                    height: 30px;
+                    width: 200px;
+                    background-color: rgb(50, 50, 50);
+                    color: azure;
+                    ">
+                </div>
+                <p id="check-username" class="field hidden none" style="margin: 10px auto; color: rgb(190, 80, 80);">Это имя занято</p>
+            </form>
+            <button id="confirm-button" class="field hidden" style="font-size: larger; margin: 20px auto; padding: 5px 30px; border: 0px solid; background-color: rgb(90, 85, 180); color: rgb(195, 195, 195);">
+                Подтвердить
+            </button>
+            <button id="account-exist-text" class="field hidden" style="margin: 0px auto; border: 0px solid; background-color: rgb(50, 50, 50); color: rgb(195, 195, 195);">
+                Уже есть аккаунт?
+            </button>
         </div>
-        Подтвердите пароль
-        <div>
-            <input type="password" name="password2">
-        </div>
-    </fieldset>
+    <div style="
+    display: block;
+    position:static;
+    /* top: 20%; */
+    /* left: 20%; */
+    /* transform: translate(-20%, -20%); */
+    " class="field visible">
+        <button id="error-button" class="field" style="width: 100px; background-color: red; color: white; justify-content: center;">Ошибка</button>
+        <!-- <button id="confirm-button" class="field" style="width: 100px; background-color: rgb(0, 171, 0); color: white; justify-content: center;">Успех</button> -->
+        <button id="reset-button" class="field" style="width: 100px; color: white; justify-content: center;">Сбросить</button>
+        <!-- <button id="change-form" class="field" style="width: 100px; background-color: cadetblue; color: white; justify-content: center;">Изменить форму</button> -->
+    </div>
+</body>
 
-    {% if form.errors %}
-        {% for field in form %}
-            {% for error in filed.errors %}
-            <div>
-                <p>{{ error|escape }}</p>
-            </div>
-            {% endfor %}
-        {% endfor %}
-    {% endif %}
 
-    <input class="loginButton" type="submit" value="Sing up">
+{% block scripts %}
+{{ username|json_script:"json-username" }}
 
-</form>
+<script>
 
+    const groupSocket = new WebSocket(
+        `ws://localhost:8080/rg/`
+    );
+
+    groupSocket.onopen = function(e) {
+        console.log('connected')
+    }
+
+    groupSocket.onclose = function(e) {
+        console.log('connection has closed')
+    }
+
+    document.querySelector('#confirm-button').onclick = function() {
+        const activeElement = document.querySelector('#active-element1');
+        const confirmButton = document.querySelector('#confirm-button')
+        const secondActiveElement = document.querySelector('#active-element2');
+        const thirdActiveElement = document.querySelector('#active-element3');
+        const accountExistText = document.querySelector('#account-exist-text')
+        const timeChange = 300;
+
+        activeElement.classList.add('hidden');
+        secondActiveElement.classList.remove('none')
+        thirdActiveElement.classList.remove('none')
+        accountExistText.classList.remove('visible')
+        accountExistText.classList.add('hidden')
+
+        setTimeout(() =>{
+            const activeElement = document.querySelector('#active-element1');
+            accountExistText.classList.add('none')
+            activeElement.classList.add('none');
+        }, timeChange)
+
+        setTimeout(() => {
+            secondActiveElement.classList.add('visible');
+        }, timeChange+350);
+        
+        setTimeout(() => {
+            thirdActiveElement.classList.add('visible');
+        }, timeChange+380);
+    }
+
+    document.querySelector('#error-button').onclick = function() {
+        const activeElement = document.querySelector('#active-element1');
+        const secondActiveElement = document.querySelector('#active-element2');
+        const thirdActiveElement = document.querySelector('#active-element3');
+        const errorMessage = document.querySelector('#check-username');
+        const timeChange = 200;
+
+        errorMessage.classList.remove('none');
+        setTimeout(() =>{
+            errorMessage.classList.remove('hidden');
+            errorMessage.classList.add('visible');
+        }, timeChange)
+    }
+
+    document.querySelector('#reset-button').onclick = function() {
+        const activeElement = document.querySelector('#active-element1');
+        const secondActiveElement = document.querySelector('#active-element2');
+        const thirdActiveElement = document.querySelector('#active-element3');
+        const errorMessage = document.querySelector('#check-username');
+
+        activeElement.classList.remove('hidden', 'none');
+        
+        secondActiveElement.classList.add('hidden', 'none')
+        thirdActiveElement.classList.add('hidden', 'none')
+        
+        secondActiveElement.classList.remove('visible')
+        thirdActiveElement.classList.remove('visible')
+
+        errorMessage.classList.remove('visible')
+        errorMessage.classList.add('hidden')
+    }
+
+    // '#change-form', 
+    document.querySelector('#account-exist-text').onclick = function() {
+        const logotypeElement = document.querySelector('#logotype');
+        const regText = document.querySelector('#reg-text');
+        const activeElement = document.querySelector('#active-element1');
+        const accountExistText = document.querySelector('#account-exist-text')
+
+        const time = 100
+
+        setTimeout(() => {
+            logotypeElement.classList.add('hidden')
+            logotypeElement.classList.remove('visible')
+        }, time+80)
+
+        setTimeout(() =>{
+            regText.classList.add('hidden')
+            regText.classList.remove('visible')
+        }, time+160)
+
+        setTimeout(() =>{
+            activeElement.classList.add('hidden')
+            activeElement.classList.remove('visible')
+        }, time+240)
+
+        setTimeout(() => {
+            accountExistText.classList.add('hidden')
+            accountExistText.classList.remove('visible')
+        }, time+300)
+
+        setTimeout(() => {
+            window.location.href = "/login/";
+        }, time+600)
+
+    }
+
+    function loading() {
+        const logotypeElement = document.querySelector('#logotype');
+        const regText = document.querySelector('#reg-text');
+        const activeElement = document.querySelector('#active-element1');
+        const confirmButton = document.querySelector('#confirm-button');
+        const accountExistText = document.querySelector('#account-exist-text')
+
+        const time = 0
+
+        setTimeout(() => {
+            logotypeElement.classList.remove('hidden')
+            logotypeElement.classList.add('visible')
+        }, time+100)
+
+        setTimeout(() => {
+            regText.classList.remove('hidden')
+            regText.classList.add('visible')
+        }, time+200)
+
+        setTimeout(() => {
+            activeElement.classList.remove('hidden')
+            activeElement.classList.add('visible')
+        }, time+300)
+
+        setTimeout(() => {
+            confirmButton.classList.remove('hidden')
+            confirmButton.classList.add('visible')
+        }, time+400)
+
+        setTimeout(() => {
+            accountExistText.classList.remove('hidden')
+            accountExistText.classList.add('visible')
+        }, time+500)
+        
+    }
+    loading()
+</script>
+
+{% endblock %}
 {% endblock %}

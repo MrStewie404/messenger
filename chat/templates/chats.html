@@ -16,7 +16,7 @@
       {% for chat in chats %}
         <a href="{% url 'chat' chat.id %}">
           <div class="group">
-            <p style="color: rgb(255, 255, 255);">{{ chat.user.first_name }} {{ chat.user.last_name }}</p>
+            <p style="color: rgb(255, 255, 255);">{{ chat.user }}</p>
             <img class="white_filter" src="{% static 'default/arrow_right.svg' %}" width="10px">
           </div>
         </a>
