@@ -1,8 +1,7 @@
 {% extends "flatpages/default.html" %}
-<!-- {% load i18n %} -->
 
 {% load static %}
-    
+
 {% block content %}
 <body class="body-style" style="background-color: rgb(50, 50, 50);">
     <div style="display: flex; 
@@ -25,8 +24,7 @@
                 {% csrf_token %}
                 <div id="active-element1" class="field hidden">
                     <input class="input-text" id="username" type="text" name="username" placeholder="Имя пользователя">
-                        <!-- <p id="join-text" class="field visible" style="color: rgb(195, 195, 195); max-width: 100%; font-size: 15px;">Уже есть аккаунт?</p> -->
-                    </div>
+                </div>
 
                 <div id="active-element2" class="field hidden none">
                     <input id="password1" type="password" name="password1" placeholder="Пароль"
@@ -58,6 +56,9 @@
                     ">
                 </div>
                 <p id="check-username" class="field hidden none" style="margin: 10px auto; color: rgb(190, 80, 80);">Это имя занято</p>
+                <button id="confirm-button" class="field hidden none" style="font-size: larger; margin: 20px auto; padding: 5px 30px; border: 0px solid; background-color: rgb(90, 85, 180); color: rgb(195, 195, 195);">
+                    Подтвердить
+                </button>
             </form>
             <button id="confirm-button" class="field hidden" style="font-size: larger; margin: 20px auto; padding: 5px 30px; border: 0px solid; background-color: rgb(90, 85, 180); color: rgb(195, 195, 195);">
                 Подтвердить
@@ -164,6 +165,7 @@
         const logotypeElement = document.querySelector('#logotype');
         const regText = document.querySelector('#reg-text');
         const activeElement = document.querySelector('#active-element1');
+        const confirmButton = document.querySelector('#confirm-button')
         const accountExistText = document.querySelector('#account-exist-text')
 
         const time = 100
@@ -183,14 +185,20 @@
             activeElement.classList.remove('visible')
         }, time+240)
 
+
+        setTimeout(() => {                           
+            confirmButton.classList.add('hidden')    
+            confirmButton.classList.remove('visible')
+        }, time+300)                                 
+
         setTimeout(() => {
             accountExistText.classList.add('hidden')
             accountExistText.classList.remove('visible')
-        }, time+300)
+        }, time+380)
 
         setTimeout(() => {
             window.location.href = "/login/";
-        }, time+600)
+        }, time+680)
 
     }
 
@@ -221,7 +229,7 @@
         setTimeout(() => {
             confirmButton.classList.remove('hidden')
             confirmButton.classList.add('visible')
-        }, time+400)
+        }, time+400)                                  
 
         setTimeout(() => {
             accountExistText.classList.remove('hidden')

@@ -129,8 +129,9 @@
     color: #000000;
   }
 
-  .body-style{
-    background-color: rgb(239, 235, 235);
+body{
+    background-color: rgb(50, 50, 50);
+    /* background-color: rgb(239, 235, 235); */
     margin: 0;
     padding: 0;
     overflow: hidden;

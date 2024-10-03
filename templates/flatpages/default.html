@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% load static %}
-    <link href="{% static 'default/styles.css' %}" rel="stylesheet">
+    {% block static %}
+        <link href="{% static 'default/styles.css' %}" rel="stylesheet">
+    {% endblock %}
 </head>
-<body>
+<div>
     {% if user.is_authenticated %}
         <div class="navbar-brand" style="height: 50px;">
             <div class="box">
@@ -34,5 +36,5 @@
         {% block content %}
         {% endblock %}
     </div>
-</body>
+</div>
 </html>

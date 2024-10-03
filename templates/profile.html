@@ -16,7 +16,7 @@
 </style>
 
 {% block content %}
-<body class="body-style">
+<body>
   <div class="window" style="width: 300px;">
     <fieldset>
       <div>
@@ -33,8 +33,7 @@
           <div style="display: flex; flex-direction: column; align-items: center; margin-top: 10px;">
             <p style="display: flex; justify-content: center; font-size: larger; font-size: smaller;">@{{ profile.username }}</p>
             <div style="display: flex; flex-direction: row;">  
-              <p style="font-size: larger;">{{ profile.first_name }}</p>
-              <p style="font-size: larger;">{{ profile.last_name }}</p>
+              <p style="font-size: larger;">{{ profile.first_name }} {{ profile.last_name }}</p>
             </div>
             {% if profile == request.user %}
               <div>
