@@ -1,43 +1,47 @@
-{% extends "flatpages/default.html" %}
 {% load i18n %}
 
 {% load static %}
+<link href="{% static 'default/styles.css' %}" rel="stylesheet">
 
-{% block content %}
-
-<form class="window" method="post">
-{% csrf_token %}
-<div style="display: flex; justify-content: center;">
-    <p style="font-weight:bolder; color: red;">* Ваш пароль должен быть не меньше 8 символов</p>
-</div>
-<fieldset>
+<body class="brand black window">
+    <form class="window" method="post">
         {% csrf_token %}
-        Имя
-        <div>
-            <input type="username" name="username">
+        <div id="login-container" style="display: flex; justify-content: center; align-items: center; height: 30px; margin-top: 50px;">
+            <img id="login-logo" src="{% static 'default/logotype/logo.svg' %}" class="white_filter" style="width: 80px; transition: width 1s ease;">
+            <p id="login-text" style="color: white; font-size: 0px; margin-left: 10px; transition: font-size 1s ease;">Регистрация</p>
         </div>
-        Пароль
-        <div>
-            <input type="password" name="password1">
+        <div class="window" style="margin-top: 15vh;">
+            <input type="username" name="username" placeholder="Юзернейм" class="input-text" style="height: 40px;">
+            <input type="password" name="password1" placeholder="Пароль" class="input-text" style="height: 40px;">
+            <input type="password" name="password2" placeholder="Подтвердите пароль" class="input-text" style="height: 40px;">
         </div>
-        Подтвердите пароль
-        <div>
-            <input type="password" name="password2">
-        </div>
-    </fieldset>
-
-    {% if form.errors %}
-        {% for field in form %}
-            {% for error in filed.errors %}
-            <div>
-                <p>{{ error|escape }}</p>
-            </div>
+        
+        {% if form.errors %}
+            {% for field in form %}
+                {% for error in filed.errors %}
+                <div>
+                    <p>{{ error|escape }}</p>
+                </div>
+                {% endfor %}
             {% endfor %}
-        {% endfor %}
-    {% endif %}
+        {% endif %}
+        <input class="loginButton" style="padding: 0 10px;" type="submit" value="Регистрация">
+    
+    </form>
+</body>
 
-    <input class="loginButton" type="submit" value="Sing up">
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const logo = document.getElementById('login-logo');
+    const text = document.getElementById('login-text');
 
-</form>
-
-{% endblock %}
+    function animateElements() {
+        setTimeout(() => {
+            logo.style.width = '50px';
+            text.style.fontSize = '50px';
+        }, 500);
+    }
+    
+    animateElements();
+});
+</script>

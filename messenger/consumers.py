@@ -166,3 +166,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
             chat_id=chat_id,
             text=message
         )
+
+class UsernameCheckExist(AsyncWebsocketConsumer):
+    async def connect(self):
+        await self.accept()
+
+    async def disconnect(self, _):
+        pass
+
+    async def receive(self, username):
+        data = json.loads(username)
+        username = data['username']
+
+    @sync_to_async
+    def check_user(self, username):
+        user = User.objects.get(username=username)
+        username = user.username
+        return username

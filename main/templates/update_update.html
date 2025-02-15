@@ -1,0 +1,28 @@
+{% load i18n %}
+
+{% load static %}
+
+<link href="{% static 'default/styles.css' %}" rel="stylesheet">
+<style>
+    .input-text {
+        text-align:left;
+        padding-left: 10px;
+        max-width: 90%;
+        max-height: 150px;
+        width: 100%;
+        margin: 10px auto;
+    }
+</style>
+<body>
+    <form class="window" style="margin: 10px;" method="post">
+        {% csrf_token %}
+        <input class="input-text" style="height: 40px;" name="title" id="id_title" placeholder="Название" value="{{ form.title.value }}"></input>
+        <textarea class="input-text" style="height: 150px;" name="text" cols="40" rows="10" required="" id="id_text" placeholder="Описание">{{ form.text.value }}</textarea>
+        <div style="display: flex; flex-direction: row; margin-top: 10px;">
+            <input class="loginButton" type="submit" value="Сохранить">
+            <a href="/update/del/{{ form.instance.id }}" class="loginButton" style="display: flex; align-items: center; background-color: brown;">
+                <p>Удалить</p>
+            </a>
+        </div>
+    </form>
+</body>

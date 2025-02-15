@@ -1,26 +1,71 @@
 {% extends 'flatpages/default.html' %} 
 {% load static %}
 
+{% block content %}
+
 <style>
-.avatar-container {
-  background-image: url("{{ user.avatar.url }}");
-  width: 100px;
-  height: 100px;
-  border-radius: 100%;
-  transition: all 0.2s ease;
+p {
+  color: white;
+  max-width: 100%;
+  padding: 10px 0;
 }
 
-.avatar-container:hover {
-  background-image: url("{% static 'default/photo.svg' %}");
+.module-iframe {
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: block;
 }
+
+#floating-window-button {
+  background-color: black; /* Green */
+  border: none;
+  color: white;
+  padding: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.blur-tag {
+    display: inline-block; /* Или block если нужно блочное поведение */
+    background-color: rgba(0, 0, 0, 0); /* Полупрозрачный фон для лучшего эффекта */
+    /* padding: 5px 10px; */
+    /* border-radius: 10px; */
+    backdrop-filter: blur(0px); /* Применяем блюр */
+    -webkit-backdrop-filter: blur(10px); /* Для совместимости с Safari */
+    color: #333;
+    font-weight: bold;
+    transition: 0.5s all ease-in;
+}
+
+.bluring {
+    margin: 0;
+    /* overflow: hidden; */
+    /* background-color: #000000; */
+    display: flex;  /* Изменяем flex на block */
+    height: 100vh; /* Высота на весь viewport */
+    position: relative; /* Для позиционирования bubbles */
+}
+
+#text-bluring-notic {
+  transition: 0.5s all ease;
+}
+
 </style>
 
-{% block content %}
-<body class="body-style">
-  <div class="window" style="width: 300px;">
-    <fieldset>
+<link rel="stylesheet" href="{% static 'default/highlight/styles/atom-one-dark.css' %}">
+<script src="{% static 'default/highlight/highlight.min.js' %}"></script>
+
+<body class="brand black">
+  <div class="window" style="max-width: 800px;">
+    <fieldset style="min-width: 100px; width: 80%; max-width: 400px; margin: 20px auto;">
       <div>
-        <div style="display: flex; flex-direction: column; align-items: center;">
+        <div style="display: flex; flex-direction: row; align-items: center; text-align: center;">
+          {% comment %}
           {% if user == request.user %}
           <div style="width: 60px; margin-bottom: 15px; ">
             <a href="/logout/" style="display: flex; justify-content: center; color: red;">
@@ -29,26 +74,150 @@
             </a>
           </div>
           {% endif %}
-          <img class="avatar" src="/{{ avatar.path }}" alt="error avatar" width="100" height="100">
-          <div style="display: flex; flex-direction: column; align-items: center; margin-top: 10px;">
-            <p style="display: flex; justify-content: center; font-size: larger; font-size: smaller;">@{{ user.username }}</p>
-            <div style="display: flex; flex-direction: row;">  
-              <p style="font-size: larger;">{{ user.first_name }}</p>
-              <p style="font-size: larger;">{{ user.last_name }}</p>
-            </div>
+          {% endcomment %}
+          <div>
+            <img class="avatar" style="border: solid 4px beige;" src="/{{ avatar.path }}" alt="avatar" width="100" height="100">
             {% if user == request.user %}
-              <div>
+              <div style="padding-left: 0px;">
                 <a href="edit/" style="color: blue;">
-                  <p style="display: flex; gap: 5px; float: right;">Изменить
-                    <img style="width: 18px;" src="{% static 'default/paintbrush.svg' %}" >
+                  <p style="display: flex; gap: 5px; background-color: rgb(194, 41, 27); color: rgb(255, 255, 255); margin: 5px 10px; padding: 0 10px; border-radius: 5px; font-weight: 600;">
+                    Изменить
                   </p>
                 </a>
               </div>
             {% endif %}
           </div>
+          <div style="display: flex; flex-direction: column; width: 100%;">
+            <div style="padding-left: 0px;">
+              <div style="font-size: 30px;">
+                <p style="font-size: larger; margin: 0; padding: 0;">{{ user.first_name }} {{ user.last_name }}</p>
+              </div>
+              <p style="font-size: smaller; margin: 0; padding: 0; color: gray;">@{{ user.username }}</p>
+            </div>
+            <div style="display: flex; justify-content: center; width: 100%;">
+              <div style="padding-left: 10px; max-height: 120px;">
+                <!-- <p style="text-align: left; font-size: smaller; color: rgb(200, 200, 200); max-width: 100%; max-height: 120px;">Lorem Ipsum - это просто фиктивный текст, используемый в полиграфии и типографском деле. Lorem Ipsum был стандартным фиктивным текстом в этой отрасли с 1500-х годов, когда неизвестный печатник взял галеру со шрифтом и отсканировал ее, чтобы сделать книгу образцов шрифтов.</p> -->
+                  <p style="text-align: left; font-size: smaller; color: rgb(200, 200, 200);">{{ description }}</p>
+                </div>
+            </div>
+          </div>
         </div>
       </div>
     </fieldset>
+    <div style="display: flex; margin: auto;">
+      <!-- <button id="floating-window-button">Открыть iframe в плавающем окне</button> -->
+      {% for module in modules %}
+        {% if module.visibility_for_others == True and module.user != request.user or module.user == request.user %}
+        <!-- <div class="bluring"> -->
+          <iframe id="my-iframe" src="{% static module.module.path %}" class="module-iframe"
+          style="width: {% if module.width != 0 and module.width < 800 %} {{ module.width }}px {% else %} 100% {% endif %};
+                height: {% if module.height != 0 %} {{ module.height }}px {% else %} auto {% endif %};"> /* position: absolute; */
+          </iframe>
+
+          <!-- <span id="blur" class="blur-tag" style="display: flex; width: 100%; height: 100%;">
+          </span>
+          <p id="text-bluring-notic" style="display: none; margin: auto; align-items: center; justify-content: center; color: rgba(0, 0, 0, 0); position: absolute;
+          width: {% if module.width != 0 and module.width < 800 %} {{ module.width }}px {% else %} 100% {% endif %};
+          height: {% if module.height != 0 %} {{ module.height }}px {% else %} auto {% endif %};
+          font-size: 20px;
+          ">Модуль открыт в окне</p> -->
+        <!-- </div> -->
+        {% endif %}
+      {% endfor %}
+    </div>
   </div>
+  <!-- <div style="margin: auto; height: 400px; border: solid 2px white; border-radius: 10px; overflow-y: auto;">
+    <pre><code class="language-html" style="width: 50%; white-space: pre-line;" id="code"></code></pre>
+  </div> -->
 </body>
+
+<!-- <script>hljs.highlightAll();</script> -->
+
+<script>
+  // fetch(`{% static 'default/template.html' %}`).then(response => response.text())
+  //   .then(html => {
+  //     const myTemplate = html;
+  //     const template = document.getElementById('code')
+  //     template.textContent = myTemplate;
+  //     template.style = "font-family: Menlo-Regular; font-size:12px"
+  //     hljs.highlightAll();
+  //   }
+  // ).catch(error => console.error('Ошибка:', error));
+
+
+    document.getElementById('floating-window-button').addEventListener('click', () => {
+      const iframe = document.getElementById('my-iframe');
+      const iframeContent = iframe.contentDocument || iframe.contentWindow.document;
+
+      // Получаем HTML контент iframe
+      const iframeHTML = iframeContent.documentElement.outerHTML;
+
+      // Создаем плавающее окно (используем нативные возможности браузера)
+      const floatingWindow = window.open('', '_blank', 'width=500,height=600,left=200,top=100');
+      floatingWindow.document.write(iframeHTML);
+
+      // Закрываем writer, чтобы контент корректно отобразился
+      floatingWindow.document.close();
+
+      const blur = document.getElementById('blur');
+      bluring(blur, 10);
+      checkWindowClosed(floatingWindow)
+
+      // Создаем стили (опционально, можно перенести стили из исходного iframe, если они есть)
+      const style = floatingWindow.document.createElement('style');
+      style.textContent = `
+        body {
+          margin: 0;
+          padding: 0;
+        }
+      `;
+      floatingWindow.document.head.appendChild(style);
+    });
+
+    function bluring(object, amount) {
+      if (amount > 0)
+        document.getElementById('text-bluring-notic').style.color = 'rgba(255, 255, 255, 1)'
+      else 
+        document.getElementById('text-bluring-notic').style.color = 'rgba(0, 0, 0, 0)'
+      object.style.backdropFilter = `blur(${amount}px)`;
+    }
+
+    function checkWindowClosed(checked_window) {
+      const timer = setTimeout(() => {
+        if (checked_window.closed) {
+          clearInterval(timer);
+          const blur = document.getElementById('blur');
+          bluring(blur, 0);
+        } else {
+          checkWindowClosed(checked_window);
+        }
+      }, 1000);
+  }
+
+
+  // function debounce(func, delay) {
+  //       let timeout;
+  //       return function(...args) {
+  //         const context = this;
+  //         clearTimeout(timeout);
+  //         timeout = setTimeout(() => func.apply(context, args), delay);
+  //       };
+  //     }
+
+  //     function myFunction () {
+  //       document.getElementById('floating-window-button').style.display = 'inline-block'
+  //     }
+
+  //     function myOutFunction (debouncedMyFunction) {
+  //       clearTimeout(intervalId)
+  //       document.getElementById('floating-window-button').style.display = 'none'
+  //     }
+
+  //     const debouncedMyFunction = debounce(myFunction, 1000);
+      
+  //     document.getElementById('my-iframe').addEventListener('mouseenter', () => {
+  //       // Запускаем функцию с интервалом 500мс (0.5 секунды)
+  //       intervalId = setInterval(myFunction, 500);
+  //     });
+</script>
 {% endblock content %}

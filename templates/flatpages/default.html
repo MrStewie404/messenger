@@ -7,47 +7,43 @@
     <link href="{% static 'default/styles.css' %}" rel="stylesheet">
     <title>Link up</title>
 </head>
+
+<style>
+    .centered {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .logo {
+        color: gray;
+        filter: invert(42%) sepia(4%) saturate(7%) hue-rotate(341deg) brightness(92%) contrast(90%);
+        transition: 0.2s all;
+    }
+    .logo:hover {
+        filter: invert(99%) sepia(5%) saturate(267%) hue-rotate(34deg) brightness(117%) contrast(100%);
+    }
+</style>
+
 <body>
-    <div class="navbar-brand" style="height: 50px;">
-        {% if user.is_authenticated %}
-            <div class="box">
-                <a class="text_color" href="/chats/">
-                    <p>Чаты</p>
-                </a>
-                <hr>
-                {% if group %}
-                <a style="color: rgba(169, 169, 169, 0.692);" href="/groups/">
-                    <span>{{ group.name }}</span>
-                </a>
-                {% else %}
-                <a class="text_color" href="/groups/">
-                    <span>Группы</span>
-                </a>
-                {% endif %}
-                <hr>
-                <a style="color:rgb(212, 226, 86)" href="/profile/{{ user.id }}">
-                    <span>{{ user.username }}</spanp>
-                </a>
-            </div>
-        {% else %}
-            <div class="box">
-                <a style="color: rgb(103, 232, 176);" href="/login/">
-                    <span>Войти</span>
-                </a>
-                <hr>
-                <a style="color: rgb(103, 232, 176);" href="/signup/">
-                    <span>Регистрация</span>
-                </a>
-            </div>
-        {% endif %}
+    <div class="brand black" style="height: 50px;">
+        <div class="box" style="justify-content: space-between;">
+            <a class="centered logo" style="width: 40px; margin: 20px;" href="/about/">
+                <img src="{% static 'default/logotype/logo.svg' %}" style="width: 30px;">
+                <span style="margin-left: 10px;">LinkUp</span>
+            </a>
+            {% if user.is_authenticated %}
+            <a style="color:rgb(255, 255, 255)" href="/profile/{{ user.id }}">
+                <span>Профиль</span>
+            </a>
+            {% else %}
+            <a style="color: rgb(255, 255, 255);" href="/login/">
+                <span>Войти</span>
+            </a>
+            {% endif %}
+        </div>
     </div>
     <div>
         {% block content %}
-        {% endblock %}
-        {% block scripts %}
-        <script>
-            var local_ip = '192.168.0.103:8000'
-        </script>
         {% endblock %}
     </div>
 </body>

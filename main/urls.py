@@ -1,12 +1,18 @@
 from django.urls import path, include
-from .views import (signup, user_detail, update_profile, 
-                    avatar_view, UpdatesDetailView,
-                    update_create, login_view, logout_view, base)
+from .views import *
 
 urlpatterns = [
-    path('', base, name='updates'),
+    path('', base),
+    path('modules/', module_search, name='modules'),
+    path('modules/create/', modules_create, name='modules_create'),
+    path('modules/add/<int:pk>/', modules_add, name='modules_add'),
+    path('modules/del/<int:pk>/', modules_del, name='modules_del'),
+    path('modules/upd/<int:pk>/', modules_upd, name='modules_upd'),
+    path('updates/', UpdatesListView.as_view(), name='updates'),
     path('update/add/', update_create, name='update_create'),
-    path('update/<int:pk>/', UpdatesDetailView.as_view(), name='update_create'),
+    path('update/upd/<int:pk>', update_update, name='update_update'),
+    path('update/del/<int:pk>', update_delete, name='update_delete'),
+    path('update/<int:pk>/', UpdatesDetailView.as_view(), name='update'),
     path('signup/', signup, name='signup'),
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),

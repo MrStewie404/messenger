@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'group',
     'chat',
     'channels',
-    'compressor',
 ]
 
 MIDDLEWARE = [
@@ -54,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
 ]
 
 ROOT_URLCONF = 'messenger.urls'
@@ -140,7 +140,6 @@ LOGIN_URL = '/login/'
 
 SITE_ID = 1 
 STATIC_URL = '/static/'
-# STATIC_URL = '/staticfiles/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
@@ -156,3 +155,23 @@ COMPRESS_PRECOMPILERS = (
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+    
+# Разрешить загрузку в iframe с любого сайта, не рекомендуется!    
+# X_FRAME_OPTIONS = 'ALLOW-FROM *'
+
+    
+# Разрешить загрузку в iframe с того же сайта (рекомендуется по умолчанию)    
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+    
+# Разрешить загрузку в iframe только со своего сайта (здесь нужно указать ваш домен)    
+#CSP_FRAME_ANCESTORS = ("'self'",  "https://yourdomain.com") #Замените https://yourdomain.com на свой домен.
+
+    
+#Разрешить загрузку в iframe с любого сайта (не рекомендуется)    
+# CSP_FRAME_ANCESTORS = "*"
+
+    
+#Разрешить загрузку в iframe со своего сайта    
+CSP_FRAME_ANCESTORS = ("'self'",) # Рекомендуется по умолчанию

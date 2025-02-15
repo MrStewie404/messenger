@@ -1,24 +1,67 @@
-{% extends 'flatpages/default.html' %} 
-
 {% load static %}
-{% block title %}
-Вход в аккаунт
-{% endblock title %}
-
-<head>
-    <link href="{% static 'default/styles.css' %}" rel="stylesheet">
-    <style>
-        .username_input {
-            height: 25px;
-            width: 100%;
-        }
-    </style>
-</head>
 
 {% block content %}
-<body class="body-style">
-    <div>
-        <p>Добро пожаловать</p>
-    </div>    
+<head>
+    <link href="{% static 'default/styles.css' %}" rel="stylesheet">
+</head>
+
+<style>
+    .window {
+        width: 400px;
+    }
+</style>
+
+<body class="body brand black" style="padding: 0;">
+    <div style="display: flex; justify-content: center; align-items: center; margin-top: 50px;">
+        <img src="{% static 'default/logotype/logo.svg' %}" class="white_filter" style="width: 80px; transition: width 1s ease;">
+        <p id="name" style="color: white; font-size: 60px; margin-left: 10px;"></p>
+    </div>
+    <div style="display: flex; flex-direction: column; margin-top: 100px;">
+        <div class="window" style="gap: 20px;">
+            <div id="window" style="display: flex; flex-direction: column; color: white; padding: 10px; border: solid 3px rgb(70, 60, 160); border-radius: 20px;">
+                <a href="/login/" style="color: white;">Войти в аккаунт</a>
+                <a href="/signup/" style="color: white;">Зарегестрироваться</a>
+            </div>
+        </div>
+        <div class="window" style="gap: 20px;">
+            <!-- <div id="window" style="display: flex; flex-direction: column; gap: 10px; padding: 10px; border: solid 3px rgb(70, 60, 160); border-radius: 20px;">
+                <p style="color: white; font-size: 20px;">Обновления</p>
+                {% for update in updates %}
+                  <a href="/update/{{ update.id }}/">
+                    <div class="group">
+                      <p style="color: rgb(255, 255, 255)">{{ update.date|date:"d.m" }}</p>
+                      <p style="color: rgb(255, 255, 255)">{{ update.title }}</p>
+                      <img class="white_filter" src="{% static 'default/arrow_right.svg' %}" width="20px" height="20px">
+                    </div>
+                  </a>
+                {% endfor %}
+            </div> -->
+            <div id="window" style="color: white; padding: 10px; border: solid 3px rgb(70, 60, 160); border-radius: 20px;">
+                <p style="font-size: 20px;">Статистика</p>
+                <div>
+                    <p>Зарегестрированных юзеров: {{ user_count }}</p>
+                    <p>Пользователей онлайн: 0</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginText = document.getElementById('name');
+        const text = 'LinkUp';
+        let index = 0;
+
+        function typeText() {
+            if (index < text.length) {
+                loginText.textContent += text[index];
+                index++;
+                setTimeout(typeText, 50);
+            }
+        }
+        setTimeout(typeText, 500);
+    });
+</script>
+
 {% endblock %}

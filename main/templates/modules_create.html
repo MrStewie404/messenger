@@ -1,0 +1,56 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+<style>
+    .border {
+        border: solid 2px rgb(86, 79, 192); 
+        border-radius: 10px;
+        padding: 10px;
+        gap: 10px;
+        color: gray;
+    }
+</style>
+<body class="brand black">
+    <form method="POST" enctype="multipart/form-data" style="margin-top: 50px;">
+        {% csrf_token %}
+        {% comment %}
+        {{ form.module_details_formset.management_form }}
+        {% for module_detail_form in form.module_details_formset %}
+            {{ module_detail_form.as_p }}
+        {% endfor %}
+        {{ form.as_p }}
+        {{ form.as_p }} 
+        {% endcomment %}
+        <div class="window" style="flex-direction: column; gap: 20px; margin-bottom: 20px;">
+            <div style="display: flex; flex-direction: column;">
+                <div class="border" style="display: flex; flex-direction: column;">
+                    <p>Введите название вашего модуля:</p>
+                    <input type="text" class="center-button" name="name" required="" aria-invalid="true" id="id_name">
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                <div class="border" style="display: flex; flex-direction: column;">
+                    <p>Расскажите для чего ваш модуль:</p>
+                    <textarea style="height: 150px; resize: none;" name="description" cols="40" rows="10" required="" aria-invalid="true" id="id_description"></textarea>
+                </div>
+            </div>
+            <div class="center-button border" style="display: flex; flex-direction: column; color: white;">
+                <div style="display: flex; flex-direction: row; color: white; margin: auto;">
+                    <input type="file" name="path" id="id_path">
+                </div>
+                <div style="display: flex; flex-direction: row; justify-content: center;">
+                    <p style="font-size: xx-small; margin: 0;">Я подтверждаю, что файл соответствует 
+                        <a href="/" style="font-size: xx-small; color: rgb(127, 176, 255);">правилам платформы</a>
+                    </p>
+                    <input type="checkbox" name="verificated" id="id_verificated">
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: row; color: white; justify-content: center;">
+                <p>Модуль публичный: </p>
+                <input type="checkbox" name="visible_in_public" id="id_visible_in_public">
+            </div>
+        </div>
+        <button id="save-profile-button" class="loginButton center-button">Сохранить</button>
+    </form>
+</body>
+{% endblock %}

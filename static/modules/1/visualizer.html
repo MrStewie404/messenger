@@ -1,0 +1,147 @@
+<!-- Измени этот код так, чтобы бары в канвасе были такой ширины, чтобы они занимали всю ширину своего тега. Не больше, ни меньше -->
+
+<div id="content">
+    <input type="file" id="thefile" accept="audio/*" />
+    <canvas id="canvas"></canvas>
+    <audio id="audio" controls></audio>
+</div>
+<style>
+#thefile {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 100;
+}
+
+#canvas {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+audio {
+  position: fixed;
+  left: 10px;
+  bottom: 10px;
+  width: calc(100% - 20px);
+}
+
+.hidden-controls::-webkit-media-controls-panel {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.hidden-controls::-webkit-media-controls-timeline-container {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.hidden-controls::-webkit-media-controls-mute-button {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.hidden-controls::-webkit-media-controls-play-button {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.hidden-controls::-webkit-media-controls-current-time-display {
+    opacity: 0;
+    pointer-events: none;
+}
+</style>
+
+<script>
+    window.onload = function() {
+  
+    var file = document.getElementById("thefile");
+    var audio = document.getElementById("audio");
+
+    const hideControlsTimeout = 3000; // Задержка в миллисекундах (3 секунды)
+    let timeoutId;
+
+    // Функция, чтобы скрыть контролы
+    function hideControls() {
+    audio.classList.add('hidden-controls');
+    }
+
+    // Функция для сброса таймера и показа контролов
+    function resetTimer() {
+        audio.classList.remove('hidden-controls');
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(hideControls, hideControlsTimeout);
+    }
+
+    // Добавляем обработчик события mousemove
+    audio.addEventListener('mousemove', resetTimer);
+    audio.addEventListener('touchstart', resetTimer);
+    audio.addEventListener('click', resetTimer);
+
+    // Инициализируем таймер при загрузке страницы
+    resetTimer();
+    
+    file.onchange = function() {
+            var files = this.files;
+            audio.src = URL.createObjectURL(files[0]);
+            audio.load();
+            audio.play();
+            var context = new AudioContext();
+            var src = context.createMediaElementSource(audio);
+            var analyser = context.createAnalyser();
+
+            var canvas = document.getElementById("canvas");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            var ctx = canvas.getContext("2d");
+
+            src.connect(analyser);
+            analyser.connect(context.destination);
+
+            analyser.fftSize = 128;
+
+            var bufferLength = analyser.frequencyBinCount;
+            console.log(bufferLength);
+
+            var dataArray = new Uint8Array(bufferLength);
+
+            var WIDTH = canvas.width;
+            var HEIGHT = canvas.height;
+
+            var barWidth = (WIDTH / bufferLength) * 2.5;
+            var barHeight;
+            var x = 0;
+
+            function renderFrame() {
+            requestAnimationFrame(renderFrame);
+
+            x = 0;
+
+            analyser.getByteFrequencyData(dataArray);
+
+            ctx.fillStyle = "#000";
+            ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+            for (var i = 0; i < bufferLength; i++) {
+                barHeight = dataArray[i]/1.5;
+                
+                var r = barHeight + (25 * (i/bufferLength));
+                // var g = barHeight + (25 * (i/bufferLength));
+                // var b = barHeight + (25 * (i/bufferLength));
+                var g = 250 * (i/bufferLength);
+                var b = 50;
+
+                ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
+                ctx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
+
+                x += barWidth;
+            }
+            }
+
+            audio.play();
+            renderFrame();
+        };
+    };
+</script>

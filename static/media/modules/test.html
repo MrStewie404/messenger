@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Модальное окно с блюром</title>
+  <style>
+    /* Базовый стиль */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('https://via.placeholder.com/1200') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    /* Размытие заднего фона через overlay */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.5); /* Полупрозрачный тёмный фон */
+      backdrop-filter: blur(8px); /* Размытие фона */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Активное состояние модального окна */
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Само модальное окно */
+    .modal {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    /* Кнопка "Закрыть" */
+    .close-btn {
+      background-color: #ff5252;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    .close-btn:hover {
+      background-color: #ff0000;
+    }
+
+    /* Анимация появления */
+    @keyframes fadeIn {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Кнопка для открытия модального окна -->
+  <button id="openModalBtn" style="margin: 20px; padding: 10px 20px; font-size: 16px;">Открыть модальное окно</button>
+
+  <!-- Модальное окно и затемнённый задний фон -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <h2>Привет! Это модальное окно 😎</h2>
+      <p>Этот фон выглядит круто, потому что он размыт. Ты всегда можешь его закрыть.</p>
+      <button class="close-btn" id="closeModalBtn">Закрыть</button>
+    </div>
+  </div>
+
+  <script>
+    // Получаем элементы
+    const openModalBtn = document.getElementById('openModalBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const modalOverlay = document.getElementById('modalOverlay');
+
+    // Открытие модального окна
+    openModalBtn.addEventListener('click', () => {
+      modalOverlay.classList.add('active');
+    });
+
+    // Закрытие модального окна по кнопке "Закрыть"
+    closeModalBtn.addEventListener('click', () => {
+      modalOverlay.classList.remove('active');
+    });
+
+    // Закрытие модального окна по клику на затемнённый фон
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) {
+        modalOverlay.classList.remove('active');
+      }
+    });
+  </script>
+
+</body>
+</html>

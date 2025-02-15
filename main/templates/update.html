@@ -1,25 +1,47 @@
-{% extends 'flatpages/default.html' %} 
-
 {% load static %}
+{% load filters %}
 
-{% block content %}
-<body class="body-style">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пузырьки в Петри</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<link href="{% static 'default/styles.css' %}" rel="stylesheet">
+
+<style>
+    .messages {
+        height: auto;
+    }
+    @media (min-width: 700px) {
+        .messages {
+            display: flex;
+            max-width: 100%;
+            margin: 20px auto;
+        }
+    }
+</style>
+
+<body style="height: 90%; margin: 0; padding: 0; overflow-y: auto;">
+    <div style="display: flex; justify-content: space-between; color: white; margin: 20px; align-items: center;">
+        <div style="width: 100%;">
+            <p style="font-size: large;">{{ update.title }}</p>
+            <p style="color: gray;">{% translate_date update.date %}</p>
+        </div>
+        <a href="/update/upd/{{ update.id }}" style="display: flex; justify-content: center; width: 35px; height: 35px; border-radius: 5px; background-color: rgb(86, 79, 192);">
+            <img src="{% static 'default/paintbrush.svg' %}" class="white_filter" style="width: 20px;">
+        </a>
+    </div>
     <div class="messages" id="chat-messages">
-        <div class="message">
+        <div class="message brand black" style="color: white;">
             <div>
-                <div style="display: flex; justify-content: space-between;">
-                    <p>{{ update.title }}</p>
-                    <p>{{ update.date|date:"H:i e" }}</p>
+                <div style="display: flex; justify-content: space-between; margin-top: 10px; margin-bottom: 10px;">
+                    <div style="display: flex; align-content: center;">
+                        <p style="font-weight:bold; font-size: 15px; max-width: none; white-space: pre-line;"> {{ update.text }}</p>
+                    </div>
                 </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-                        <div style="display: flex; align-content: center;">
-                            <p style="font-weight:bold; max-width: none;"> {{ update.text }}</p>
-                        </div>
-                </div>
-                <p style="color: white; padding: 4px; font-size: large; max-width: none;"> {{ message.text }} </p>
             </div>
         </div>
     </div>
-    <!-- <button class="button-submit" id="chat-message-submit">Назад</button> -->
 </body>
-{% endblock %}

@@ -19,12 +19,12 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from main.views import login_redirect
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
     path('', include('main.urls')),
     path('groups/', include('group.urls')),
     path('chats/', include('chat.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/profile/', login_redirect, name='login_redirect'),
+    path('admin/', admin.site.urls),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
