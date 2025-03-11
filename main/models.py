@@ -37,6 +37,10 @@ class AddedModules(models.Model):
 
     def __str__(self):
         return self.module.name
+    
+class ModuleSequence(models.Model):
+    user = models.ForeignKey(User, verbose_name='user', on_delete=models.CASCADE)
+    modules_id = models.JSONField('Modules sequence', default=list, null=False)
 
 class Updates(models.Model):
     id = models.AutoField(primary_key=True)

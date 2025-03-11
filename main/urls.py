@@ -19,4 +19,5 @@ urlpatterns = [
     path('profile/<int:pk>/', user_detail, name='profile'),
     path('profile/<int:pk>/edit/', update_profile, name='update_profile'),
     path('media/avatars/<str:filename>', avatar_view),
+    path('modules/upd_seq/', module_update_sequence),
 ]

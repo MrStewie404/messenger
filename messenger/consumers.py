@@ -183,3 +183,15 @@ class UsernameCheckExist(AsyncWebsocketConsumer):
         user = User.objects.get(username=username)
         username = user.username
         return username
+    
+class ModulesWorking(AsyncWebsocketConsumer):
+    async def connect(self):
+        await self.accept()
+
+    async def disconnect(self, _):
+        pass
+
+    async def receive(self):
+        await self.send(text_data=json.dumps({
+            'hello': 'hello'
+        }))

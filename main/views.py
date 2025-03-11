@@ -7,7 +7,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.conf import settings
-from .models import Avatars, Updates, Modules, AddedModules
+from .models import *
 from django.core.files.storage import default_storage
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -48,6 +48,22 @@ def user_detail(request, pk):
         description = UserSupplement.objects.get(user=user)
 
     modules = AddedModules.objects.filter(user=user, visible=True)
+    added_modules = list(AddedModules.objects.filter(user=user, visible=True))
+
+    # Получаем или создаем последовательность модулей
+    sequence_obj, created = ModuleSequence.objects.get_or_create(user=user, defaults={'modules_id': []})
+
+    # Если список пуст, создаем последовательность в виде [[id1], [id2], [id3]]
+    if not sequence_obj.modules_id:
+        sequence_obj.modules_id = [[mod.id] for mod in added_modules]
+        sequence_obj.save()
+
+    # Создаем отображение id -> объект
+    module_dict = {mod.id: mod for mod in added_modules}
+
+    # Формируем двумерный массив, заменяя id на реальные объекты
+    modules = [[module_dict[obj] for obj in row['modules'] if obj in module_dict.keys()] for row in sequence_obj.modules_id]
+
     return render(request, 'profile.html', {
         'user': user, 
         'avatar': avatar, 
@@ -360,3 +376,44 @@ def update_delete(request, pk):
 
 def login_redirect(request):
     return redirect('/')
+
+from django.views.decorators.csrf import csrf_exempt
+@csrf_exempt
+def module_update_sequence(request):
+    if request.method == 'POST':
+        try:
+            # Парсим данные из тела запроса (ожидается JSON)
+            data = json.loads(request.body)
+
+            try:
+                do = data.get('do')
+            except:
+                do = "nothing"
+            user_id = data.get('user_id')
+            sequence = data.get('sequence')
+
+            if "update" == do:
+                # Проверяем, существует ли сущность с таким user_id
+                if ModuleSequence.objects.filter(user_id=user_id).exists():
+                    # Если существует, обновляем записи
+                    ModuleSequence.objects.filter(user_id=user_id).update(modules_id=sequence)
+                    return JsonResponse({'message': 'has been updated'}, status=200)  # Ответ с кодом 200 - успешно
+                else:
+                    # Если сущности нет, создаём новую
+                    ModuleSequence.objects.create(user_id=user_id, modules_id=sequence)
+                    return JsonResponse({'message': 'has been created'}, status=200)  # Ответ с кодом 200 - успешно
+            elif "get" == do:
+                # Проверяем, существует ли сущность с таким user_id
+                if ModuleSequence.objects.filter(user_id=user_id).exists():
+                    sequence = ModuleSequence.objects.get(user_id=user_id)
+                    return JsonResponse({'message': 'your welcome', 'user_id': sequence.user.id, 'modules': sequence.modules_id}, status=200)  # Ответ с кодом 200 - успешно
+                else:
+                    return JsonResponse({'error': 'check user_id'}, status=400)  # Ответ с кодом 200 - успешно
+            else:
+                return JsonResponse({'error': 'i dont know what u want. update or get? please, tald me that in "do"'}, status=400)  # Ответ с кодом 200 - успешно
+
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+    

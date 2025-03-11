@@ -104,47 +104,24 @@ p {
         </div>
       </div>
     </fieldset>
+    {% for line in modules %}
     <div style="display: flex; margin: auto;">
-      <!-- <button id="floating-window-button">Открыть iframe в плавающем окне</button> -->
-      {% for module in modules %}
-        {% if module.visibility_for_others == True and module.user != request.user or module.user == request.user %}
-        <!-- <div class="bluring"> -->
-          <iframe id="my-iframe" src="{% static module.module.path %}" class="module-iframe"
-          style="width: {% if module.width != 0 and module.width < 800 %} {{ module.width }}px {% else %} 100% {% endif %};
-                height: {% if module.height != 0 %} {{ module.height }}px {% else %} auto {% endif %};"> /* position: absolute; */
-          </iframe>
-
-          <!-- <span id="blur" class="blur-tag" style="display: flex; width: 100%; height: 100%;">
-          </span>
-          <p id="text-bluring-notic" style="display: none; margin: auto; align-items: center; justify-content: center; color: rgba(0, 0, 0, 0); position: absolute;
-          width: {% if module.width != 0 and module.width < 800 %} {{ module.width }}px {% else %} 100% {% endif %};
-          height: {% if module.height != 0 %} {{ module.height }}px {% else %} auto {% endif %};
-          font-size: 20px;
-          ">Модуль открыт в окне</p> -->
-        <!-- </div> -->
-        {% endif %}
+      {% for module in line %}
+        <div>
+          {% if module.visibility_for_others == True and module.user != request.user or module.user == request.user %}
+            <iframe id="my-iframe" src="{% static module.module.path %}" class="module-iframe"
+            style="width: {% if module.width != 0 and module.width < 800 %} {{ module.width }}px {% else %} 100% {% endif %};
+                  height: {% if module.height != 0 %} {{ module.height }}px {% else %} auto {% endif %};"> /* position: absolute; */
+            </iframe>
+          {% endif %}
+        </div>
       {% endfor %}
     </div>
+    {% endfor %}
   </div>
-  <!-- <div style="margin: auto; height: 400px; border: solid 2px white; border-radius: 10px; overflow-y: auto;">
-    <pre><code class="language-html" style="width: 50%; white-space: pre-line;" id="code"></code></pre>
-  </div> -->
 </body>
 
-<!-- <script>hljs.highlightAll();</script> -->
-
 <script>
-  // fetch(`{% static 'default/template.html' %}`).then(response => response.text())
-  //   .then(html => {
-  //     const myTemplate = html;
-  //     const template = document.getElementById('code')
-  //     template.textContent = myTemplate;
-  //     template.style = "font-family: Menlo-Regular; font-size:12px"
-  //     hljs.highlightAll();
-  //   }
-  // ).catch(error => console.error('Ошибка:', error));
-
-
     document.getElementById('floating-window-button').addEventListener('click', () => {
       const iframe = document.getElementById('my-iframe');
       const iframeContent = iframe.contentDocument || iframe.contentWindow.document;
@@ -193,31 +170,5 @@ p {
         }
       }, 1000);
   }
-
-
-  // function debounce(func, delay) {
-  //       let timeout;
-  //       return function(...args) {
-  //         const context = this;
-  //         clearTimeout(timeout);
-  //         timeout = setTimeout(() => func.apply(context, args), delay);
-  //       };
-  //     }
-
-  //     function myFunction () {
-  //       document.getElementById('floating-window-button').style.display = 'inline-block'
-  //     }
-
-  //     function myOutFunction (debouncedMyFunction) {
-  //       clearTimeout(intervalId)
-  //       document.getElementById('floating-window-button').style.display = 'none'
-  //     }
-
-  //     const debouncedMyFunction = debounce(myFunction, 1000);
-      
-  //     document.getElementById('my-iframe').addEventListener('mouseenter', () => {
-  //       // Запускаем функцию с интервалом 500мс (0.5 секунды)
-  //       intervalId = setInterval(myFunction, 500);
-  //     });
 </script>
 {% endblock content %}
