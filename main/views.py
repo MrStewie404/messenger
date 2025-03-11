@@ -55,7 +55,7 @@ def user_detail(request, pk):
 
     # Если список пуст, создаем последовательность в виде [[id1], [id2], [id3]]
     if not sequence_obj.modules_id:
-        sequence_obj.modules_id = [[mod.id] for mod in added_modules]
+        sequence_obj.modules_id = [{"name": mod.module.name, "sequence": [mod.id]} for mod in added_modules]
         sequence_obj.save()
 
     # Создаем отображение id -> объект
