@@ -175,12 +175,6 @@ def update_profile(request, pk):
             user_form.save()
             avatar_form.save()
             description_form.save()
-            # selected_modules = modules_form.cleaned_data['modules']
-
-            # Обновляем поле visible в модели
-            # for module in user_modules:
-            #     module.visible = module in selected_modules # если модуль выбран - True, иначе - False
-            #     module.save()
 
             return redirect(f'/profile/{request.user.pk}/edit/')
         print(description_form.errors)
